@@ -29,11 +29,7 @@ class BytebeamClient {
       }
     });
 
-    mqttClient.published!.listen((message) {
-      // TODO: what comes here?
-      // pubacks
-      // print("BYTEBEAM::INFO puback: $message");
-    });
+    mqttClient.published!.listen((message) {});
 
     if (sendDeviceShadow) {
       deviceShadowTask();
