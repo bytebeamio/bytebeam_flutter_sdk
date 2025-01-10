@@ -5,10 +5,16 @@ import 'package:bytebeam_flutter_sdk/lib.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 
 extension Messenger on BytebeamClient {
+
+  /// Queue a message to be uploaded to cloud
   void sendMessage(BytebeamPayload payload) {
+    if (messagesQueue.length >= maxQueuedMessages) {
+      messagesQueue.removeFirst();
+    }
     messagesQueue.addLast(payload);
   }
 
+  /// Internal
   Future<void> messengerTask() async {
     while (!disconnected) {
       var payload = messagesQueue.firstOrNull;
@@ -30,12 +36,13 @@ extension Messenger on BytebeamClient {
     }
   }
 
+  /// Internal
   Future<void> deviceShadowTask() async {
     int sequence = 1;
     while (!disconnected) {
       sendMessage(BytebeamPayload("device_shadow", sequence, {}));
       sequence += 1;
-      await MqttUtilities.asyncSleep(5);
+      await MqttUtilities.asyncSleep(15);
     }
   }
 }

@@ -44,7 +44,7 @@ extension Downloader on BytebeamClient {
         sendMessage(BytebeamPayload.actionResponse(action.id, "Downloading", progress, error: error));
       }
       sendMessage(BytebeamPayload.actionResponse(action.id, "Downloaded", 100));
-      action.payload["file_path"] = filePath;
+      action.payload["firmware_path"] = filePath;
       sendActionToUser(action);
     } catch (e) {
       await downloadFile.delete();
