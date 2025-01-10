@@ -12,29 +12,16 @@ export 'package:bytebeam_flutter_sdk/types.dart';
 class BytebeamClient {
   DeviceCredentials credentials;
   MqttServerClient mqttClient;
-  bool disconnected = false;
+  ConnectionState connectionState = ConnectionState.Init;
+
   bool downloadFirmwares;
+  bool sendDeviceShadow;
   int maxQueuedMessages;
   Queue<BytebeamPayload> messagesQueue = Queue();
   void Function(Action action) sendActionToUser;
 
-  BytebeamClient._(this.credentials, this.mqttClient, this.downloadFirmwares, bool sendDeviceShadow, this.maxQueuedMessages, this.sendActionToUser) {
-    mqttClient.updates!.listen((events) async {
-      for (var event in events) {
-        if (event.payload is MqttPublishMessage) {
-          var pub = event.payload as MqttPublishMessage;
-          var action = Action.fromString(utf8.decode(pub.payload.message));
-          processAction(action);
-        }
-      }
-    });
-
-    mqttClient.published!.listen((message) {});
-
-    if (sendDeviceShadow) {
-      deviceShadowTask();
-    }
-    messengerTask();
+  BytebeamClient._(this.credentials, this.mqttClient, this.downloadFirmwares, this.sendDeviceShadow, this.maxQueuedMessages, this.sendActionToUser) {
+    initiateConnection();
   }
 
   /// Connect to bytebeam backend
@@ -45,9 +32,6 @@ class BytebeamClient {
   /// `enableMqttLogs` : Enable low level mqtt client logs
   /// `maxQueuedMessages` : If network is down, this library will buffer outgoing messages in memory. This parameter can be used to control the max buffer size
   /// `sendDeviceShadow` : Automatically send messages to "device_shadow" stream. This is used to show the device heartbeat on the dashboard.
-  ///
-  /// It will throw an exception if network is down
-  /// Afterwards, it will reconnect in case of disconnections automatically
   static Future<BytebeamClient> create({
     required DeviceCredentials credentials,
     required void Function(Action) actionsCallback,
@@ -67,35 +51,18 @@ class BytebeamClient {
     client.keepAlivePeriod = 30;
     client.autoReconnect = true;
 
-    try {
-      // TODO: test how autoReconnect works with initial connection
-      await client.connect();
-    } catch (e) {
-      print("BYTEBEAM::ERROR failed to connect to broker");
-      client.disconnect();
-      rethrow;
-    }
-
-    if (client.connectionStatus?.state == MqttConnectionState.connected) {
-      print("BYTEBEAM::INFO connected to bytebeam broker");
-    } else {
-      throw "failed to connect to broker, mqtt response: ${client.connectionStatus?.returnCode}";
-    }
-
-    var actionsTopic = "/tenants/${credentials.project}/devices/${credentials.deviceId}/actions";
-    client.subscribe(actionsTopic, MqttQos.atLeastOnce);
-
     return BytebeamClient._(credentials, client, downloadFirmwares, sendDeviceShadow, maxQueuedMessages, actionsCallback);
   }
 
   /// Disconnect from broker and stop all background threads.
   void disconnect() {
     mqttClient.disconnect();
-    disconnected = true;
+    connectionState = ConnectionState.Disconnected;
   }
 
   Future<void> processAction(Action action) async {
     print("BYTEBEAM::INFO received action: ${action.name}, ${action.id}, ${action.payload}");
+    sendMessage(BytebeamPayload.actionResponse(action.id, "ReceivedByDevice", 0));
     if (downloadFirmwares && action.name == "update_firmware") {
       try {
         performDownload(action);
@@ -105,8 +72,46 @@ class BytebeamClient {
         sendMessage(BytebeamPayload.actionResponse(action.id, "Failed", 100, error: error) );
       }
     } else {
-      // send to user
-      sendActionToUser(action);
+      try { sendActionToUser(action); } catch (e) {}
     }
   }
+
+  Future<void> initiateConnection() async {
+    while (true) {
+      try {
+        await mqttClient.connect();
+        connectionState = ConnectionState.Connected;
+        print("BYTEBEAM::INFO connected to bytebeam broker");
+        break;
+      } catch (e) {
+        print("BYTEBEAM::WARN couldn't connect, network is down. retrying in 3s");
+        await MqttUtilities.asyncSleep(3);
+      }
+    }
+
+    mqttClient.updates!.listen((events) async {
+      for (var event in events) {
+        if (event.payload is MqttPublishMessage) {
+          var pub = event.payload as MqttPublishMessage;
+          var action = Action.fromString(utf8.decode(pub.payload.message));
+          processAction(action);
+        }
+      }
+    });
+    mqttClient.published!.listen((message) {});
+
+    var actionsTopic = "/tenants/${credentials.project}/devices/${credentials.deviceId}/actions";
+    mqttClient.subscribe(actionsTopic, MqttQos.atLeastOnce);
+
+    if (sendDeviceShadow) {
+      deviceShadowTask();
+    }
+    messengerTask();
+  }
+}
+
+enum ConnectionState {
+  Init,
+  Connected,
+  Disconnected,
 }

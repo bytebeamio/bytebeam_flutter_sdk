@@ -12,3 +12,8 @@ Future<void> ensureExists(String directory) async {
   }
 }
 
+
+T dbg<T>(T value) {
+  print(value);
+  return value;
+}

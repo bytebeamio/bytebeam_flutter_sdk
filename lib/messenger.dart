@@ -17,7 +17,7 @@ extension Messenger on BytebeamClient {
   /// Internal
   Future<void> messengerTask() async {
     try {
-      while (!disconnected) {
+      while (isConnected()) {
         var payload = messagesQueue.firstOrNull;
         if (payload == null) {
           await MqttUtilities.asyncSleep(1);
@@ -36,7 +36,7 @@ extension Messenger on BytebeamClient {
         }
       }
     } catch (e) {
-      if (!disconnected) {
+      if (isConnected()) {
         print("BYTEBEAM::ERROR messenger task ended with error: $e");
       }
     }
@@ -46,15 +46,19 @@ extension Messenger on BytebeamClient {
   Future<void> deviceShadowTask() async {
     int sequence = 1;
     try {
-      while (!disconnected) {
+      while (isConnected()) {
         sendMessage(BytebeamPayload("device_shadow", sequence, {}));
         sequence += 1;
         await MqttUtilities.asyncSleep(15);
       }
     } catch (e) {
-      if (!disconnected) {
+      if (isConnected()) {
         print("BYTEBEAM::ERROR device shadow task ended with error: $e");
       }
     }
+  }
+
+  bool isConnected() {
+    return connectionState == ConnectionState.Connected;
   }
 }

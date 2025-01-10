@@ -23,6 +23,9 @@ Future<void> main(List<String> argv) async {
         } else {
           client.sendMessage(BytebeamPayload.actionResponse(action.id, "Failed", 100));
         }
+
+        // delete file after installation to save on disk space
+        File(action.payload["firmware_path"]).delete();
       }
   );
   await asleep(1000000);

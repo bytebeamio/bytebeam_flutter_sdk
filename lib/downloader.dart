@@ -38,14 +38,14 @@ extension Downloader on BytebeamClient {
           progress = 0;
           error = "content-length not available";
         } else {
-          progress = (written / contentLength).toInt();
+          progress = ((written / contentLength) * 100).toInt();
           error = null;
         }
         sendMessage(BytebeamPayload.actionResponse(action.id, "Downloading", progress, error: error));
       }
       sendMessage(BytebeamPayload.actionResponse(action.id, "Downloaded", 100));
       action.payload["firmware_path"] = filePath;
-      sendActionToUser(action);
+      try { sendActionToUser(action); } catch (e) {}
     } catch (e) {
       await downloadFile.delete();
       rethrow;
