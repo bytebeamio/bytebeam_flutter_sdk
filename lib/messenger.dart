@@ -9,15 +9,23 @@ extension Messenger on BytebeamClient {
     messagesQueue.addLast(payload);
   }
 
-  Future<void> uploadTask() async {
+  Future<void> messengerTask() async {
     while (!disconnected) {
-      var next = messagesQueue.firstOrNull;
-      if (next == null) {
-        MqttUtilities.asyncSleep(1);
+      var payload = messagesQueue.firstOrNull;
+      if (payload == null) {
+        await MqttUtilities.asyncSleep(1);
       } else {
-        // var topic = "/tenants/${credentials.project}/devices/${credentials.id}/events/${next.stream}/jsonarray";
-        // var mqttMessage = MqttClientPayloadBuilder();
-        // mqttClient.publishMessage(topic, MqttQos.atLeastOnce, );
+        var mqttMessage = MqttClientPayloadBuilder();
+        var message = payload.asMqttPayload();
+        String topic;
+        if (payload.stream == "action_status") {
+          topic = "/tenants/${credentials.project}/devices/${credentials.deviceId}/action/status";
+        } else {
+          topic = "/tenants/${credentials.project}/devices/${credentials.deviceId}/events/${payload.stream}/jsonarray";
+        }
+        mqttMessage.addString(message);
+        mqttClient.publishMessage(topic, MqttQos.atLeastOnce, mqttMessage.payload!);
+        messagesQueue.removeFirst();
       }
     }
   }

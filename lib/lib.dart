@@ -34,6 +34,8 @@ class BytebeamClient {
       // pubacks
       // print("BYTEBEAM::INFO puback: $message");
     });
+    
+    messengerTask();
   }
 
   static Future<BytebeamClient> create({
@@ -42,7 +44,7 @@ class BytebeamClient {
     bool downloadFirmwares = true,
     bool enableMqttLogs = false,
   }) async {
-    var client = MqttServerClient(credentials.brokerHost, credentials.id);
+    var client = MqttServerClient(credentials.brokerHost, credentials.deviceId);
     client.logging(on: enableMqttLogs);
     client.port = credentials.brokerPort;
     client.setProtocolV311();
@@ -68,7 +70,7 @@ class BytebeamClient {
       print("BYTEBEAM::ERROR failed to connect to broker, mqtt response: ${client.connectionStatus?.returnCode}");
     }
 
-    var actionsTopic = "/tenants/${credentials.project}/devices/${credentials.id}/actions";
+    var actionsTopic = "/tenants/${credentials.project}/devices/${credentials.deviceId}/actions";
     client.subscribe(actionsTopic, MqttQos.atLeastOnce);
 
     return BytebeamClient._(credentials, client, downloadFirmwares, actionsCallback);

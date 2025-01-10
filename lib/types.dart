@@ -6,7 +6,7 @@ import "package:http/http.dart";
 import "package:http/io_client.dart";
 
 class DeviceCredentials {
-  String id;
+  String deviceId;
   String project;
   String brokerHost;
   int brokerPort;
@@ -15,7 +15,7 @@ class DeviceCredentials {
   String devicePrivateKey;
 
   DeviceCredentials({
-    required this.id,
+    required this.deviceId,
     required this.project,
     required this.brokerHost,
     required this.brokerPort,
@@ -29,7 +29,7 @@ class DeviceCredentials {
 
     var auth = jsonMap["authentication"] as Map;
     return DeviceCredentials(
-      id: jsonMap["device_id"] as String,
+      deviceId: jsonMap["device_id"] as String,
       project: jsonMap["project_id"] as String,
       brokerHost: jsonMap["broker"] as String,
       brokerPort: jsonMap["port"] as int,
@@ -84,7 +84,7 @@ class BytebeamPayload {
   static BytebeamPayload actionResponse(String action_id, String status, int progress, {String? error}) {
     var fields = <String, dynamic>{};
     fields["action_id"] = action_id;
-    fields["status"] = status;
+    fields["state"] = status;
     fields["progress"] = progress;
     if (error != null) {
       fields["errors"] = [error];
@@ -92,14 +92,22 @@ class BytebeamPayload {
     return BytebeamPayload("action_status", 0, fields);
   }
 
-  String toPayloadItem() {
+  String asMqttPayload() {
     Map<String, dynamic> jsonMap = {
       'sequence': sequence,
       'timestamp': timestamp,
     };
+    for (var f in fields.entries) {
+      if (f.value is List || f.value is Map) {
+        print("BYTEBEAM::ERROR Key ${f.key} has an invalid value, only primitives are allowed");
+      } else {
+        jsonMap[f.key] = f.value;
+      }
+    }
     jsonMap.addAll(fields);
 
-    return jsonEncode(jsonMap);
+    dynamic payload = [jsonMap];
+    return jsonEncode(payload);
   }
 }
 
