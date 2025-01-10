@@ -29,4 +29,13 @@ extension Messenger on BytebeamClient {
       }
     }
   }
+
+  Future<void> deviceShadowTask() async {
+    int sequence = 1;
+    while (!disconnected) {
+      sendMessage(BytebeamPayload("device_shadow", sequence, {}));
+      sequence += 1;
+      await MqttUtilities.asyncSleep(5);
+    }
+  }
 }

@@ -17,7 +17,7 @@ class BytebeamClient {
   Queue<BytebeamPayload> messagesQueue = Queue();
   void Function(Action action) sendActionToUser;
 
-  BytebeamClient._(this.credentials, this.mqttClient, this.downloadFirmwares, this.sendActionToUser) {
+  BytebeamClient._(this.credentials, this.mqttClient, this.downloadFirmwares, bool sendDeviceShadow, this.sendActionToUser) {
     mqttClient.updates!.listen((events) async {
       print("BYTEBEAM::INFO incoming publishes:");
       for (var event in events) {
@@ -34,7 +34,10 @@ class BytebeamClient {
       // pubacks
       // print("BYTEBEAM::INFO puback: $message");
     });
-    
+
+    if (sendDeviceShadow) {
+      deviceShadowTask();
+    }
     messengerTask();
   }
 
@@ -43,6 +46,7 @@ class BytebeamClient {
     required void Function(Action) actionsCallback,
     bool downloadFirmwares = true,
     bool enableMqttLogs = false,
+    bool sendDeviceShadow = true,
   }) async {
     var client = MqttServerClient(credentials.brokerHost, credentials.deviceId);
     client.logging(on: enableMqttLogs);
@@ -73,7 +77,7 @@ class BytebeamClient {
     var actionsTopic = "/tenants/${credentials.project}/devices/${credentials.deviceId}/actions";
     client.subscribe(actionsTopic, MqttQos.atLeastOnce);
 
-    return BytebeamClient._(credentials, client, downloadFirmwares, actionsCallback);
+    return BytebeamClient._(credentials, client, downloadFirmwares, sendDeviceShadow, actionsCallback);
   }
 
   void disconnect() {
