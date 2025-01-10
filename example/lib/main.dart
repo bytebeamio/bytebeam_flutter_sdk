@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:bytebeam_flutter_sdk/lib.dart';
@@ -22,6 +23,8 @@ Future<void> main(List<String> argv) async {
         } else {
           client.sendMessage(BytebeamPayload.actionResponse(action.id, "Failed", 100));
         }
+
+        client.disconnect();
       }
   );
   await asleep(1000000);

@@ -16,22 +16,28 @@ extension Messenger on BytebeamClient {
 
   /// Internal
   Future<void> messengerTask() async {
-    while (!disconnected) {
-      var payload = messagesQueue.firstOrNull;
-      if (payload == null) {
-        await MqttUtilities.asyncSleep(1);
-      } else {
-        var mqttMessage = MqttClientPayloadBuilder();
-        var message = payload.asMqttPayload();
-        String topic;
-        if (payload.stream == "action_status") {
-          topic = "/tenants/${credentials.project}/devices/${credentials.deviceId}/action/status";
+    try {
+      while (!disconnected) {
+        var payload = messagesQueue.firstOrNull;
+        if (payload == null) {
+          await MqttUtilities.asyncSleep(1);
         } else {
-          topic = "/tenants/${credentials.project}/devices/${credentials.deviceId}/events/${payload.stream}/jsonarray";
+          var mqttMessage = MqttClientPayloadBuilder();
+          var message = payload.asMqttPayload();
+          String topic;
+          if (payload.stream == "action_status") {
+            topic = "/tenants/${credentials.project}/devices/${credentials.deviceId}/action/status";
+          } else {
+            topic = "/tenants/${credentials.project}/devices/${credentials.deviceId}/events/${payload.stream}/jsonarray";
+          }
+          mqttMessage.addString(message);
+          mqttClient.publishMessage(topic, MqttQos.atLeastOnce, mqttMessage.payload!);
+          messagesQueue.removeFirst();
         }
-        mqttMessage.addString(message);
-        mqttClient.publishMessage(topic, MqttQos.atLeastOnce, mqttMessage.payload!);
-        messagesQueue.removeFirst();
+      }
+    } catch (e) {
+      if (!disconnected) {
+        print("BYTEBEAM::ERROR messenger task ended with error: $e");
       }
     }
   }
@@ -39,10 +45,16 @@ extension Messenger on BytebeamClient {
   /// Internal
   Future<void> deviceShadowTask() async {
     int sequence = 1;
-    while (!disconnected) {
-      sendMessage(BytebeamPayload("device_shadow", sequence, {}));
-      sequence += 1;
-      await MqttUtilities.asyncSleep(15);
+    try {
+      while (!disconnected) {
+        sendMessage(BytebeamPayload("device_shadow", sequence, {}));
+        sequence += 1;
+        await MqttUtilities.asyncSleep(15);
+      }
+    } catch (e) {
+      if (!disconnected) {
+        print("BYTEBEAM::ERROR device shadow task ended with error: $e");
+      }
     }
   }
 }
