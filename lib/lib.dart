@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:bytebeam_flutter_sdk/types.dart';
 import 'package:bytebeam_flutter_sdk/downloader.dart';
+import 'package:bytebeam_flutter_sdk/messenger.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
@@ -31,7 +32,7 @@ class BytebeamClient {
     mqttClient.published!.listen((message) {
       // TODO: what comes here?
       // pubacks
-      print("BYTEBEAM::INFO puback: $message");
+      // print("BYTEBEAM::INFO puback: $message");
     });
   }
 
@@ -62,7 +63,7 @@ class BytebeamClient {
     }
 
     if (client.connectionStatus?.state == MqttConnectionState.connected) {
-      print("connected to broker");
+      print("BYTEBEAM::INFO connected to bytebeam broker");
     } else {
       print("BYTEBEAM::ERROR failed to connect to broker, mqtt response: ${client.connectionStatus?.returnCode}");
     }
@@ -79,9 +80,15 @@ class BytebeamClient {
   }
 
   Future<void> processAction(Action action) async {
-    print("action: ${action.name}, ${action.id}, ${action.payload}");
+    print("BYTEBEAM::INFO received action: ${action.name}, ${action.id}, ${action.payload}");
     if (downloadFirmwares && action.name == "update_firmware") {
-      performDownload(action);
+      try {
+        performDownload(action);
+      } catch (e) {
+        var error = "download failed: $e";
+        print("BYTEBEAM::ERROR $error");
+        sendMessage(BytebeamPayload.actionResponse(action.id, "Failed", 100, error: error) );
+      }
     } else {
       // send to user
       sendActionToUser(action);

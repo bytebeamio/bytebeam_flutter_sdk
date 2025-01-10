@@ -81,8 +81,9 @@ class BytebeamPayload {
 
   BytebeamPayload(this.stream, this.sequence, this.fields);
 
-  static BytebeamPayload actionResponse(String status, int progress, {String? error}) {
+  static BytebeamPayload actionResponse(String action_id, String status, int progress, {String? error}) {
     var fields = <String, dynamic>{};
+    fields["action_id"] = action_id;
     fields["status"] = status;
     fields["progress"] = progress;
     if (error != null) {

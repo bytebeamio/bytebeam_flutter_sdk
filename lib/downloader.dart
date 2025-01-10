@@ -14,41 +14,41 @@ extension Downloader on BytebeamClient {
 
     var asDirectory = await getApplicationSupportDirectory();
     var downloadDirectory = p.join(asDirectory.path, "bytebeam_downloads");
-    var filePath = p.join(downloadDirectory, uuid.Uuid().toString());
+    var filePath = p.join(downloadDirectory, uuid.Uuid().v4());
     var downloadFile = File(filePath);
     await downloadFile.create(recursive: true);
-    var fileWriter = await downloadFile.open(mode: FileMode.write);
-    await fileWriter.truncate(0);
+    try {
+      var fileWriter = await downloadFile.open(mode: FileMode.write);
+      await fileWriter.truncate(0);
 
-    var response = await credentials.httpClient()
-        .send(http.StreamedRequest("GET", Uri.dataFromString(url)));
-    if (response.statusCode != 200) {
-      sendMessage(BytebeamPayload.actionResponse("Failed", 100, error: "download failed with http status: ${response.statusCode}"));
-    } else {
+      var response = await credentials.httpClient()
+          .send(http.Request("GET", Uri.parse(url)));
+      if (response.statusCode != 200) {
+        throw "http status code: ${response.statusCode}";
+      }
+
       var contentLength = response.contentLength;
       var written = 0;
-      try {
-        await for (var chunk in response.stream) {
-          await fileWriter.writeFrom(chunk);
-          written += chunk.length;
-          int progress;
-          String? error;
-          if (contentLength == null) {
-            progress = 0;
-            error = "content-length not available";
-          } else {
-            progress = (written / contentLength).toInt();
-            error = null;
-          }
-          sendMessage(BytebeamPayload.actionResponse("Downloading", progress, error: error));
+      await for (var chunk in response.stream) {
+        await fileWriter.writeFrom(chunk);
+        written += chunk.length;
+        int progress;
+        String? error;
+        if (contentLength == null) {
+          progress = 0;
+          error = "content-length not available";
+        } else {
+          progress = (written / contentLength).toInt();
+          error = null;
         }
-        sendMessage(BytebeamPayload.actionResponse("Downloaded", 100));
-        action.payload["file_path"] = filePath;
-        sendActionToUser(action);
-      } catch (e) {
-        sendMessage(BytebeamPayload.actionResponse("Failed", 100, error: "download failed: $e"));
-        await downloadFile.delete();
+        sendMessage(BytebeamPayload.actionResponse(action.id, "Downloading", progress, error: error));
       }
+      sendMessage(BytebeamPayload.actionResponse(action.id, "Downloaded", 100));
+      action.payload["file_path"] = filePath;
+      sendActionToUser(action);
+    } catch (e) {
+      await downloadFile.delete();
+      rethrow;
     }
   }
 }
