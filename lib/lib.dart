@@ -64,13 +64,15 @@ class BytebeamClient {
     print("BYTEBEAM::INFO received action: ${action.name}, ${action.id}, ${action.payload}");
     sendMessage(BytebeamPayload.actionResponse(action.id, "ReceivedByDevice", 0));
     if (downloadFirmwares && action.name == "update_firmware") {
-      try {
-        performDownload(action);
-      } catch (e) {
-        var error = "download failed: $e";
-        print("BYTEBEAM::ERROR $error");
-        sendMessage(BytebeamPayload.actionResponse(action.id, "Failed", 100, error: error) );
-      }
+      (() async {
+        try {
+          await performDownload(action);
+        } catch (e) {
+          var error = "download failed: $e";
+          print("BYTEBEAM::ERROR $error");
+          sendMessage(BytebeamPayload.actionResponse(action.id, "Failed", 100, error: error) );
+        }
+      })();
     } else {
       try { sendActionToUser(action); } catch (e) {}
     }
