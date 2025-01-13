@@ -47,6 +47,7 @@ extension Downloader on BytebeamClient {
       action.payload["firmware_path"] = filePath;
       try { sendActionToUser(action); } catch (e) {}
     } catch (e) {
+      print("BYTEBEAM::ERROR download failed: $e");
       await downloadFile.delete();
       rethrow;
     }

@@ -32,7 +32,6 @@ extension Messenger on BytebeamClient {
           mqttClient.publishMessage(topic, MqttQos.atLeastOnce, mqttMessage.payload!);
           messagesQueue.removeFirst();
         } catch (e) {
-          print("BYTEBEAM::WARN mqtt network error: $e");
           await MqttUtilities.asyncSleep(1);
         }
       } else {
