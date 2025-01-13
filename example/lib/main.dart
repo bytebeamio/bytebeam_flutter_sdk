@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:bytebeam_flutter_sdk/lib.dart';
 import 'package:bytebeam_flutter_sdk/messenger.dart';
+import 'package:flutter/material.dart';
 
 Future<void> main(List<String> argv) async {
   late BytebeamClient client;
@@ -15,7 +16,7 @@ Future<void> main(List<String> argv) async {
         print("received firmware: ${action.payload["firmware_path"]}");
 
         // install the firmware
-        var installationSuccessful = Random().nextBool(); // just for demo
+        var installationSuccessful = true; // for demo
 
         // final status has to be one of `Failed` or `Completed`
         if (installationSuccessful) {
@@ -28,7 +29,7 @@ Future<void> main(List<String> argv) async {
         File(action.payload["firmware_path"]).delete();
       }
   );
-  await asleep(1000000);
+  runApp(Container(color: Colors.blueGrey));
 }
 
 Future<void> asleep(int seconds) async {
