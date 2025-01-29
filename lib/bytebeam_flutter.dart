@@ -71,6 +71,10 @@ Future<void> initializeBytebeamClient({
       });
 }
 
+bool sdkInitialized() {
+  return RustLib.instance.api.crateApiSdkInitialized();
+}
+
 /// Send a message to the bytebeam cloud
 void sendMessage(BytebeamPayload payload) {
   try {
