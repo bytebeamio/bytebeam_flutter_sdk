@@ -1,7 +1,5 @@
 library;
 
-import 'dart:convert';
-
 import 'package:bytebeam_flutter/utils.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -11,12 +9,20 @@ import 'src/rust/api/types.dart';
 import 'src/rust/frb_generated.dart' show RustLib;
 export 'src/rust/frb_generated.dart' show RustLib;
 
+/// Initiate connection to the backend using this configuration
+/// The SDK manages a global connection and the old one is terminated
+/// if this function is called again
 Future<void> initializeBytebeamClient({
+  /// Bytebeam device credentials
   required String credentials,
+  /// callback that will be invoked for incoming actions
   required void Function(Action) actionsCallback,
+  /// whether the sdk should download firmwares in advance
   bool downloadFirmwares = true,
-  bool enableMqttLogs = false,
+  /// interval in seconds at which device_shadow ping should be sent
   int deviceShadowInterval = 10,
+  /// extra stuff that you might want to put in uplink config file
+  String extraConfig = "",
 }) async {
   try {
     await RustLib.init();
@@ -47,9 +53,6 @@ Future<void> initializeBytebeamClient({
   
   [mqtt_metrics]
   enabled = false
-  
-  [streams.test_stream]
-  batch_size = 1
   """;
 
   var nativeLogs = RustLib.instance.api.crateApiLoggerSetupLogs();
@@ -68,10 +71,16 @@ Future<void> initializeBytebeamClient({
       });
 }
 
+/// Send a message to the bytebeam cloud
 void sendMessage(BytebeamPayload payload) {
-  RustLib.instance.api.crateApiSendMessage(payload: payload);
+  try {
+    RustLib.instance.api.crateApiSendMessage(payload: payload);
+  } catch (e) {
+    print("BYTEBEAM::ERROR attempted to send a message before initializing the connection");
+  }
 }
 
+/// Create an action response message that can be sent to the bytebeam cloud
 BytebeamPayload actionResponse({
   int sequence = 0,
   BigInt? timestamp,

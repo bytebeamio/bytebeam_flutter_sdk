@@ -6,10 +6,34 @@ import 'package:flutter/material.dart';
 import 'package:bytebeam_flutter/bytebeam_flutter.dart' as bytebeam;
 import 'package:flutter/services.dart';
 
-String creds = "{}";
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  creds = await rootBundle.loadString('assets/device.json');
+  bytebeam.initializeBytebeamClient(
+    deviceShadowInterval: 1000,
+    actionsCallback: (action) {
+      var payload = jsonDecode(action.payload);
+      var path = payload["download_path"];
+      var size = File(path).lengthSync();
+
+      print("received file of size: $size");
+      bytebeam.sendMessage(bytebeam.actionResponse(
+        actionId: action.actionId,
+        status: "Working",
+        progress: 33,
+      ));
+      bytebeam.sendMessage(bytebeam.actionResponse(
+        actionId: action.actionId,
+        status: "Installing",
+        progress: 67,
+      ));
+      bytebeam.sendMessage(bytebeam.actionResponse(
+        actionId: action.actionId,
+        status: "Completed",
+        progress: 100,
+      ));
+    },
+    credentials: await rootBundle.loadString('assets/device.json'),
+  );
   runApp(const MyApp());
 }
 
@@ -20,32 +44,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bytebeam.initializeBytebeamClient(
-      deviceShadowInterval: 1000,
-      actionsCallback: (action) {
-        var payload = jsonDecode(action.payload);
-        var path = payload["download_path"];
-        var size = File(path).lengthSync();
-
-        print("received file of size: $size");
-        bytebeam.sendMessage(bytebeam.actionResponse(
-          actionId: action.actionId,
-          status: "Working",
-          progress: 33,
-        ));
-        bytebeam.sendMessage(bytebeam.actionResponse(
-          actionId: action.actionId,
-          status: "Installing",
-          progress: 67,
-        ));
-        bytebeam.sendMessage(bytebeam.actionResponse(
-          actionId: action.actionId,
-          status: "Completed",
-          progress: 100,
-        ));
-      },
-      credentials: creds,
-    );
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Bytebeam')),
