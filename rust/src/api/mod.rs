@@ -4,7 +4,7 @@ pub mod types;
 use crate::frb_generated::FLUTTER_RUST_BRIDGE_HANDLER;
 use anyhow::{Context, Error};
 use flutter_rust_bridge::{BaseAsyncRuntime, DartFnFuture};
-use std::ops::Deref;
+use std::ops::{Deref, DerefMut};
 use std::sync::{Arc, Mutex};
 pub use uplink::ActionCallback;
 use uplink::UplinkController;
@@ -22,16 +22,7 @@ pub fn initialize_bytebeam_sdk(
     config_toml: String,
     actions_callback: impl Fn(types::Action) -> DartFnFuture<()> + Send + Sync + 'static,
 ) -> anyhow::Result<()> {
-    {
-        let lock = UPLINK_INSTANCE.lock().unwrap();
-        if let Some(sdk) = lock.deref() {
-            log::warn!("terminating old bytebeam connection");
-            let ctrl = sdk.shutdown.clone();
-            FLUTTER_RUST_BRIDGE_HANDLER
-                .async_runtime()
-                .spawn(async move { ctrl.trigger_shutdown().await; });
-        }
-    }
+    disconnect_bytebeam_client();
 
     let actions_callback = Arc::new(actions_callback);
     let controller = uplink::entrypoint(
@@ -53,16 +44,26 @@ pub fn initialize_bytebeam_sdk(
 }
 
 #[flutter_rust_bridge::frb(sync)]
-pub fn send_message(payload: types::BytebeamPayload) -> anyhow::Result<()> {
+pub fn disconnect_bytebeam_client() {
+    let mut lock = UPLINK_INSTANCE.lock().unwrap();
+    if let Some(sdk) = lock.deref_mut().take() {
+        log::warn!("terminating old bytebeam connection");
+        let ctrl = sdk.shutdown.clone();
+        FLUTTER_RUST_BRIDGE_HANDLER
+            .async_runtime()
+            .spawn(async move { ctrl.trigger_shutdown().await; });
+    }
+}
+
+#[flutter_rust_bridge::frb(sync)]
+pub fn send_message(payload: types::BytebeamPayload) {
     let sdk = UPLINK_INSTANCE.lock().unwrap();
     match sdk.deref() {
         None => {
-            log::error!("sdk hasn't been initialized");
-            Err(Error::msg("sdk hasn't been initialized"))
+            log::warn!("sdk hasn't been initialized! ignoring message");
         }
         Some(sdk) => {
-            sdk.data_tx.send(payload.to_uplink_payload())?;
-            Ok(())
+            let _ = sdk.data_tx.send(payload.to_uplink_payload());
         }
     }
 }

@@ -9,5 +9,4 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 // These types are ignored because they are not used by any `pub` functions: `LogSink`
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `flush`, `make_writer`, `write`
 
-/// Public method that Dart will call into.
 Stream<String> setupLogs() => RustLib.instance.api.crateApiLoggerSetupLogs();

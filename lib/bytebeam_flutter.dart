@@ -7,7 +7,12 @@ export 'src/rust/api/types.dart';
 import 'src/rust/api/types.dart';
 
 import 'src/rust/frb_generated.dart' show RustLib;
-export 'src/rust/frb_generated.dart' show RustLib;
+
+Future<void> initializeNativeCode() async {
+  try {
+    await RustLib.init();
+  } catch (_e) {}
+}
 
 /// Initiate connection to the backend using this configuration
 /// The SDK manages a global connection and the old one is terminated
@@ -23,9 +28,6 @@ Future<void> initializeBytebeamClient({
   /// interval in seconds at which device_shadow ping should be sent
   int deviceShadowInterval = 10,
 }) async {
-  try {
-    await RustLib.init();
-  } catch (_e) {}
   var actionRedirections = downloadFirmwares
       ? "action_redirections = { \"update_firmware\" = \"install_update\" }"
       : "";
@@ -77,6 +79,15 @@ Future<void> initializeBytebeamClient({
       actionsCallback: (action) {
         actionsCallback(action);
       });
+}
+
+/// disconnect from bytebeam backend
+void disconnectBytebeamClient() {
+  RustLib.instance.api.crateApiDisconnectBytebeamClient();
+}
+
+bool sdkInitialized() {
+  return RustLib.instance.api.crateApiSdkInitialized();
 }
 
 void sendMessage(BytebeamPayload payload) {

@@ -9,7 +9,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 bool sdkInitialized() => RustLib.instance.api.crateApiSdkInitialized();
 
-Future<void> initializeBytebeamSdk(
+void initializeBytebeamSdk(
         {required String deviceJson,
         required String configToml,
         required FutureOr<void> Function(Action) actionsCallback}) =>
@@ -17,6 +17,9 @@ Future<void> initializeBytebeamSdk(
         deviceJson: deviceJson,
         configToml: configToml,
         actionsCallback: actionsCallback);
+
+void disconnectBytebeamClient() =>
+    RustLib.instance.api.crateApiDisconnectBytebeamClient();
 
 void sendMessage({required BytebeamPayload payload}) =>
     RustLib.instance.api.crateApiSendMessage(payload: payload);
