@@ -19,29 +19,35 @@ Future<void> initializeBytebeamClient({
   required void Function(Action) actionsCallback,
   /// whether the sdk should download firmwares in advance
   bool downloadFirmwares = true,
+  bool enableRemoteShell = false,
   /// interval in seconds at which device_shadow ping should be sent
   int deviceShadowInterval = 10,
-  /// extra stuff that you might want to put in uplink config file
-  String extraConfig = "",
 }) async {
   try {
     await RustLib.init();
   } catch (_e) {}
-  var persistenceConfig =
-      "persistence_path = \"${(await getApplicationSupportDirectory()).path}/bytebeam/persistence\"";
   var actionRedirections = downloadFirmwares
       ? "action_redirections = { \"update_firmware\" = \"install_update\" }"
       : "";
   var downloaderConfig = downloadFirmwares
       ? "[downloader]\n"
-          "actions = [{ name = \"update_firmware\" }]\n"
-          "path = \"${(await getApplicationSupportDirectory()).path}/bytebeam/downloads\""
+      "actions = [{ name = \"update_firmware\" }]\n"
+      "path = \"${(await getApplicationSupportDirectory()).path}/bytebeam/downloads\""
       : "";
   var deviceShadowConfig = "[device_shadow]\n"
+      "enabled = true\n"
       "interval = $deviceShadowInterval";
 
-  // language=toml
-  var defaultConfig = """
+  var uplinkConfig = """
+  enable_remote_shell = $enableRemoteShell
+  persistence_path = "${(await getApplicationSupportDirectory()).path}/bytebeam/persistence"
+  
+  $actionRedirections
+  
+  $downloaderConfig
+  
+  $deviceShadowConfig
+  
   [system_stats]
   enabled = false
   
@@ -53,6 +59,9 @@ Future<void> initializeBytebeamClient({
   
   [mqtt_metrics]
   enabled = false
+  
+  [streams.test_stream]
+  flush_period = 10
   """;
 
   var nativeLogs = RustLib.instance.api.crateApiLoggerSetupLogs();
@@ -64,27 +73,16 @@ Future<void> initializeBytebeamClient({
 
   RustLib.instance.api.crateApiInitializeBytebeamSdk(
       deviceJson: credentials,
-      configToml:
-          "$persistenceConfig\n$actionRedirections\n$downloaderConfig\n$deviceShadowConfig\n$defaultConfig\n",
+      configToml: uplinkConfig,
       actionsCallback: (action) {
         actionsCallback(action);
       });
 }
 
-bool sdkInitialized() {
-  return RustLib.instance.api.crateApiSdkInitialized();
-}
-
-/// Send a message to the bytebeam cloud
 void sendMessage(BytebeamPayload payload) {
-  try {
-    RustLib.instance.api.crateApiSendMessage(payload: payload);
-  } catch (e) {
-    print("BYTEBEAM::ERROR attempted to send a message before initializing the connection");
-  }
+  RustLib.instance.api.crateApiSendMessage(payload: payload);
 }
 
-/// Create an action response message that can be sent to the bytebeam cloud
 BytebeamPayload actionResponse({
   int sequence = 0,
   BigInt? timestamp,

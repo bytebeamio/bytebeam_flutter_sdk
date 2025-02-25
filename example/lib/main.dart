@@ -9,28 +9,37 @@ import 'package:flutter/services.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   bytebeam.initializeBytebeamClient(
-    deviceShadowInterval: 1000,
+    deviceShadowInterval: 30,
     actionsCallback: (action) {
-      var payload = jsonDecode(action.payload);
-      var path = payload["download_path"];
-      var size = File(path).lengthSync();
+      if (action.name == "install_update") {
+        var payload = jsonDecode(action.payload);
+        var path = payload["download_path"];
+        var size = File(path).lengthSync();
 
-      print("received file of size: $size");
-      bytebeam.sendMessage(bytebeam.actionResponse(
-        actionId: action.actionId,
-        status: "Working",
-        progress: 33,
-      ));
-      bytebeam.sendMessage(bytebeam.actionResponse(
-        actionId: action.actionId,
-        status: "Installing",
-        progress: 67,
-      ));
-      bytebeam.sendMessage(bytebeam.actionResponse(
-        actionId: action.actionId,
-        status: "Completed",
-        progress: 100,
-      ));
+        print("received file of size: $size");
+        bytebeam.sendMessage(bytebeam.actionResponse(
+          actionId: action.actionId,
+          status: "Working",
+          progress: 33,
+        ));
+        bytebeam.sendMessage(bytebeam.actionResponse(
+          actionId: action.actionId,
+          status: "Installing",
+          progress: 67,
+        ));
+        bytebeam.sendMessage(bytebeam.actionResponse(
+          actionId: action.actionId,
+          status: "Completed",
+          progress: 100,
+        ));
+      } else {
+        bytebeam.sendMessage(bytebeam.actionResponse(
+            actionId: action.actionId,
+            status: "Failed",
+            progress: 100,
+            error: "unsupported action type: ${action.name}"
+        ));
+      }
     },
     credentials: await rootBundle.loadString('assets/device.json'),
   );
