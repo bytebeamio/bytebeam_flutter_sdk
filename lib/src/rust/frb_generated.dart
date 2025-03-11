@@ -5,7 +5,6 @@
 
 import 'api.dart';
 import 'api/logger.dart';
-import 'api/types.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -68,7 +67,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.7.0';
 
   @override
-  int get rustContentHash => 606680204;
+  int get rustContentHash => 1823117066;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -79,18 +78,29 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
-  void crateApiDisconnectBytebeamClient();
+  BytebeamCredentials crateApiBytebeamSdkAutoAccessorGetCredentials(
+      {required BytebeamSdk that});
 
-  void crateApiInitializeBytebeamSdk(
-      {required String deviceJson,
-      required String configToml,
-      required FutureOr<void> Function(Action) actionsCallback});
+  void crateApiBytebeamSdkAutoAccessorSetCredentials(
+      {required BytebeamSdk that, required BytebeamCredentials credentials});
 
-  bool crateApiSdkInitialized();
+  Future<Uint8List> crateApiBytebeamSdkDownloadUpdate(
+      {required BytebeamSdk that, required AvailableUpdate update});
 
-  void crateApiSendMessage({required BytebeamPayload payload});
+  Future<AvailableUpdate?> crateApiBytebeamSdkFetchAvailableUpdate(
+      {required BytebeamSdk that});
+
+  Future<BytebeamSdk> crateApiBytebeamSdkParse({required String creds});
 
   Stream<String> crateApiLoggerSetupLogs();
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_BytebeamSdk;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_BytebeamSdk;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_BytebeamSdkPtr;
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -102,111 +112,147 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  void crateApiDisconnectBytebeamClient() {
+  BytebeamCredentials crateApiBytebeamSdkAutoAccessorGetCredentials(
+      {required BytebeamSdk that}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+            that, serializer);
         return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_unit,
+        decodeSuccessData: sse_decode_bytebeam_credentials,
         decodeErrorData: null,
       ),
-      constMeta: kCrateApiDisconnectBytebeamClientConstMeta,
-      argValues: [],
+      constMeta: kCrateApiBytebeamSdkAutoAccessorGetCredentialsConstMeta,
+      argValues: [that],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateApiDisconnectBytebeamClientConstMeta =>
+  TaskConstMeta get kCrateApiBytebeamSdkAutoAccessorGetCredentialsConstMeta =>
       const TaskConstMeta(
-        debugName: "disconnect_bytebeam_client",
-        argNames: [],
+        debugName: "BytebeamSdk_auto_accessor_get_credentials",
+        argNames: ["that"],
       );
 
   @override
-  void crateApiInitializeBytebeamSdk(
-      {required String deviceJson,
-      required String configToml,
-      required FutureOr<void> Function(Action) actionsCallback}) {
+  void crateApiBytebeamSdkAutoAccessorSetCredentials(
+      {required BytebeamSdk that, required BytebeamCredentials credentials}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_String(deviceJson, serializer);
-        sse_encode_String(configToml, serializer);
-        sse_encode_DartFn_Inputs_action_Output_unit_AnyhowException(
-            actionsCallback, serializer);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+            that, serializer);
+        sse_encode_bytebeam_credentials(credentials, serializer);
         return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
-        decodeErrorData: sse_decode_AnyhowException,
+        decodeErrorData: null,
       ),
-      constMeta: kCrateApiInitializeBytebeamSdkConstMeta,
-      argValues: [deviceJson, configToml, actionsCallback],
+      constMeta: kCrateApiBytebeamSdkAutoAccessorSetCredentialsConstMeta,
+      argValues: [that, credentials],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateApiInitializeBytebeamSdkConstMeta =>
+  TaskConstMeta get kCrateApiBytebeamSdkAutoAccessorSetCredentialsConstMeta =>
       const TaskConstMeta(
-        debugName: "initialize_bytebeam_sdk",
-        argNames: ["deviceJson", "configToml", "actionsCallback"],
+        debugName: "BytebeamSdk_auto_accessor_set_credentials",
+        argNames: ["that", "credentials"],
       );
 
   @override
-  bool crateApiSdkInitialized() {
-    return handler.executeSync(SyncTask(
-      callFfi: () {
+  Future<Uint8List> crateApiBytebeamSdkDownloadUpdate(
+      {required BytebeamSdk that, required AvailableUpdate update}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+            that, serializer);
+        sse_encode_box_autoadd_available_update(update, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 3, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_bool,
-        decodeErrorData: null,
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: sse_decode_String,
       ),
-      constMeta: kCrateApiSdkInitializedConstMeta,
-      argValues: [],
+      constMeta: kCrateApiBytebeamSdkDownloadUpdateConstMeta,
+      argValues: [that, update],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateApiSdkInitializedConstMeta => const TaskConstMeta(
-        debugName: "sdk_initialized",
-        argNames: [],
+  TaskConstMeta get kCrateApiBytebeamSdkDownloadUpdateConstMeta =>
+      const TaskConstMeta(
+        debugName: "BytebeamSdk_download_update",
+        argNames: ["that", "update"],
       );
 
   @override
-  void crateApiSendMessage({required BytebeamPayload payload}) {
-    return handler.executeSync(SyncTask(
-      callFfi: () {
+  Future<AvailableUpdate?> crateApiBytebeamSdkFetchAvailableUpdate(
+      {required BytebeamSdk that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_box_autoadd_bytebeam_payload(payload, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 4, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_unit,
-        decodeErrorData: null,
+        decodeSuccessData: sse_decode_opt_box_autoadd_available_update,
+        decodeErrorData: sse_decode_String,
       ),
-      constMeta: kCrateApiSendMessageConstMeta,
-      argValues: [payload],
+      constMeta: kCrateApiBytebeamSdkFetchAvailableUpdateConstMeta,
+      argValues: [that],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateApiSendMessageConstMeta => const TaskConstMeta(
-        debugName: "send_message",
-        argNames: ["payload"],
+  TaskConstMeta get kCrateApiBytebeamSdkFetchAvailableUpdateConstMeta =>
+      const TaskConstMeta(
+        debugName: "BytebeamSdk_fetch_available_update",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<BytebeamSdk> crateApiBytebeamSdkParse({required String creds}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(creds, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 5, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateApiBytebeamSdkParseConstMeta,
+      argValues: [creds],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBytebeamSdkParseConstMeta => const TaskConstMeta(
+        debugName: "BytebeamSdk_parse",
+        argNames: ["creds"],
       );
 
   @override
   Stream<String> crateApiLoggerSetupLogs() {
     final sink = RustStreamSink<String>();
-    handler.executeSync(SyncTask(
-      callFfi: () {
+    unawaited(handler.executeNormal(NormalTask(
+      callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_StreamSink_String_Sse(sink, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 6, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -215,7 +261,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       constMeta: kCrateApiLoggerSetupLogsConstMeta,
       argValues: [sink],
       apiImpl: this,
-    ));
+    )));
     return sink.stream;
   }
 
@@ -224,38 +270,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         argNames: ["sink"],
       );
 
-  Future<void> Function(int, dynamic)
-      encode_DartFn_Inputs_action_Output_unit_AnyhowException(
-          FutureOr<void> Function(Action) raw) {
-    return (callId, rawArg0) async {
-      final arg0 = dco_decode_action(rawArg0);
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_BytebeamSdk => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk;
 
-      Box<void>? rawOutput;
-      Box<AnyhowException>? rawError;
-      try {
-        rawOutput = Box(await raw(arg0));
-      } catch (e, s) {
-        rawError = Box(AnyhowException("$e\n\n$s"));
-      }
-
-      final serializer = SseSerializer(generalizedFrbRustBinding);
-      assert((rawOutput != null) ^ (rawError != null));
-      if (rawOutput != null) {
-        serializer.buffer.putUint8(0);
-        sse_encode_unit(rawOutput.value, serializer);
-      } else {
-        serializer.buffer.putUint8(1);
-        sse_encode_AnyhowException(rawError!.value, serializer);
-      }
-      final output = serializer.intoRaw();
-
-      generalizedFrbRustBinding.dartFnDeliverOutput(
-          callId: callId,
-          ptr: output.ptr,
-          rustVecLen: output.rustVecLen,
-          dataLen: output.dataLen);
-    };
-  }
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_BytebeamSdk => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk;
 
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw) {
@@ -264,23 +285,35 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  FutureOr<void> Function(Action)
-      dco_decode_DartFn_Inputs_action_Output_unit_AnyhowException(dynamic raw) {
+  BytebeamSdk
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    throw UnimplementedError('');
+    return BytebeamSdkImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
-  Object dco_decode_DartOpaque(dynamic raw) {
+  BytebeamSdk
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return decodeDartOpaque(raw, generalizedFrbRustBinding);
+    return BytebeamSdkImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
-  Map<String, FieldValue> dco_decode_Map_String_field_value(dynamic raw) {
+  BytebeamSdk
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return Map.fromEntries(dco_decode_list_record_string_field_value(raw)
-        .map((e) => MapEntry(e.$1, e.$2)));
+    return BytebeamSdkImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  BytebeamSdk
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return BytebeamSdkImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -296,97 +329,51 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Action dco_decode_action(dynamic raw) {
+  AvailableUpdate dco_decode_available_update(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return AvailableUpdate(
+      actionId: dco_decode_String(arr[0]),
+      url: dco_decode_String(arr[1]),
+      version: dco_decode_String(arr[2]),
+      checksum: dco_decode_String(arr[3]),
+      size: dco_decode_u_32(arr[4]),
+    );
+  }
+
+  @protected
+  AvailableUpdate dco_decode_box_autoadd_available_update(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_available_update(raw);
+  }
+
+  @protected
+  BytebeamCertificates dco_decode_bytebeam_certificates(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
     if (arr.length != 3)
       throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
-    return Action(
-      actionId: dco_decode_String(arr[0]),
-      name: dco_decode_String(arr[1]),
-      payload: dco_decode_String(arr[2]),
+    return BytebeamCertificates(
+      caCertificate: dco_decode_String(arr[0]),
+      deviceCertificate: dco_decode_String(arr[1]),
+      devicePrivateKey: dco_decode_String(arr[2]),
     );
   }
 
   @protected
-  bool dco_decode_bool(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw as bool;
-  }
-
-  @protected
-  BytebeamPayload dco_decode_box_autoadd_bytebeam_payload(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_bytebeam_payload(raw);
-  }
-
-  @protected
-  BytebeamPayload dco_decode_bytebeam_payload(dynamic raw) {
+  BytebeamCredentials dco_decode_bytebeam_credentials(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
     if (arr.length != 4)
       throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
-    return BytebeamPayload(
-      stream: dco_decode_String(arr[0]),
-      sequence: dco_decode_u_32(arr[1]),
-      timestamp: dco_decode_u_64(arr[2]),
-      payload: dco_decode_Map_String_field_value(arr[3]),
+    return BytebeamCredentials(
+      projectId: dco_decode_String(arr[0]),
+      deviceId: dco_decode_String(arr[1]),
+      apiUrl: dco_decode_String(arr[2]),
+      authentication: dco_decode_bytebeam_certificates(arr[3]),
     );
-  }
-
-  @protected
-  double dco_decode_f_64(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw as double;
-  }
-
-  @protected
-  FieldValue dco_decode_field_value(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    switch (raw[0]) {
-      case 0:
-        return FieldValue_Null();
-      case 1:
-        return FieldValue_String(
-          dco_decode_String(raw[1]),
-        );
-      case 2:
-        return FieldValue_Int(
-          dco_decode_i_64(raw[1]),
-        );
-      case 3:
-        return FieldValue_Bool(
-          dco_decode_bool(raw[1]),
-        );
-      case 4:
-        return FieldValue_Float(
-          dco_decode_f_64(raw[1]),
-        );
-      case 5:
-        return FieldValue_Array(
-          dco_decode_list_field_value(raw[1]),
-        );
-      default:
-        throw Exception("unreachable");
-    }
-  }
-
-  @protected
-  PlatformInt64 dco_decode_i_64(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dcoDecodeI64(raw);
-  }
-
-  @protected
-  PlatformInt64 dco_decode_isize(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dcoDecodeI64(raw);
-  }
-
-  @protected
-  List<FieldValue> dco_decode_list_field_value(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>).map(dco_decode_field_value).toList();
   }
 
   @protected
@@ -396,37 +383,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<(String, FieldValue)> dco_decode_list_record_string_field_value(
-      dynamic raw) {
+  AvailableUpdate? dco_decode_opt_box_autoadd_available_update(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>)
-        .map(dco_decode_record_string_field_value)
-        .toList();
-  }
-
-  @protected
-  (String, FieldValue) dco_decode_record_string_field_value(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 2) {
-      throw Exception('Expected 2 elements, got ${arr.length}');
-    }
-    return (
-      dco_decode_String(arr[0]),
-      dco_decode_field_value(arr[1]),
-    );
+    return raw == null ? null : dco_decode_box_autoadd_available_update(raw);
   }
 
   @protected
   int dco_decode_u_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
-  }
-
-  @protected
-  BigInt dco_decode_u_64(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dcoDecodeU64(raw);
   }
 
   @protected
@@ -455,18 +420,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Object sse_decode_DartOpaque(SseDeserializer deserializer) {
+  BytebeamSdk
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var inner = sse_decode_isize(deserializer);
-    return decodeDartOpaque(inner, generalizedFrbRustBinding);
+    return BytebeamSdkImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
   @protected
-  Map<String, FieldValue> sse_decode_Map_String_field_value(
-      SseDeserializer deserializer) {
+  BytebeamSdk
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var inner = sse_decode_list_record_string_field_value(deserializer);
-    return Map.fromEntries(inner.map((e) => MapEntry(e.$1, e.$2)));
+    return BytebeamSdkImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  BytebeamSdk
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return BytebeamSdkImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  BytebeamSdk
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return BytebeamSdkImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
   @protected
@@ -484,97 +470,54 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Action sse_decode_action(SseDeserializer deserializer) {
+  AvailableUpdate sse_decode_available_update(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_actionId = sse_decode_String(deserializer);
-    var var_name = sse_decode_String(deserializer);
-    var var_payload = sse_decode_String(deserializer);
-    return Action(actionId: var_actionId, name: var_name, payload: var_payload);
+    var var_url = sse_decode_String(deserializer);
+    var var_version = sse_decode_String(deserializer);
+    var var_checksum = sse_decode_String(deserializer);
+    var var_size = sse_decode_u_32(deserializer);
+    return AvailableUpdate(
+        actionId: var_actionId,
+        url: var_url,
+        version: var_version,
+        checksum: var_checksum,
+        size: var_size);
   }
 
   @protected
-  bool sse_decode_bool(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getUint8() != 0;
-  }
-
-  @protected
-  BytebeamPayload sse_decode_box_autoadd_bytebeam_payload(
+  AvailableUpdate sse_decode_box_autoadd_available_update(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_bytebeam_payload(deserializer));
+    return (sse_decode_available_update(deserializer));
   }
 
   @protected
-  BytebeamPayload sse_decode_bytebeam_payload(SseDeserializer deserializer) {
+  BytebeamCertificates sse_decode_bytebeam_certificates(
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_stream = sse_decode_String(deserializer);
-    var var_sequence = sse_decode_u_32(deserializer);
-    var var_timestamp = sse_decode_u_64(deserializer);
-    var var_payload = sse_decode_Map_String_field_value(deserializer);
-    return BytebeamPayload(
-        stream: var_stream,
-        sequence: var_sequence,
-        timestamp: var_timestamp,
-        payload: var_payload);
+    var var_caCertificate = sse_decode_String(deserializer);
+    var var_deviceCertificate = sse_decode_String(deserializer);
+    var var_devicePrivateKey = sse_decode_String(deserializer);
+    return BytebeamCertificates(
+        caCertificate: var_caCertificate,
+        deviceCertificate: var_deviceCertificate,
+        devicePrivateKey: var_devicePrivateKey);
   }
 
   @protected
-  double sse_decode_f_64(SseDeserializer deserializer) {
+  BytebeamCredentials sse_decode_bytebeam_credentials(
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getFloat64();
-  }
-
-  @protected
-  FieldValue sse_decode_field_value(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var tag_ = sse_decode_i_32(deserializer);
-    switch (tag_) {
-      case 0:
-        return FieldValue_Null();
-      case 1:
-        var var_field0 = sse_decode_String(deserializer);
-        return FieldValue_String(var_field0);
-      case 2:
-        var var_field0 = sse_decode_i_64(deserializer);
-        return FieldValue_Int(var_field0);
-      case 3:
-        var var_field0 = sse_decode_bool(deserializer);
-        return FieldValue_Bool(var_field0);
-      case 4:
-        var var_field0 = sse_decode_f_64(deserializer);
-        return FieldValue_Float(var_field0);
-      case 5:
-        var var_field0 = sse_decode_list_field_value(deserializer);
-        return FieldValue_Array(var_field0);
-      default:
-        throw UnimplementedError('');
-    }
-  }
-
-  @protected
-  PlatformInt64 sse_decode_i_64(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getPlatformInt64();
-  }
-
-  @protected
-  PlatformInt64 sse_decode_isize(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getPlatformInt64();
-  }
-
-  @protected
-  List<FieldValue> sse_decode_list_field_value(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <FieldValue>[];
-    for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_field_value(deserializer));
-    }
-    return ans_;
+    var var_projectId = sse_decode_String(deserializer);
+    var var_deviceId = sse_decode_String(deserializer);
+    var var_apiUrl = sse_decode_String(deserializer);
+    var var_authentication = sse_decode_bytebeam_certificates(deserializer);
+    return BytebeamCredentials(
+        projectId: var_projectId,
+        deviceId: var_deviceId,
+        apiUrl: var_apiUrl,
+        authentication: var_authentication);
   }
 
   @protected
@@ -585,37 +528,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<(String, FieldValue)> sse_decode_list_record_string_field_value(
+  AvailableUpdate? sse_decode_opt_box_autoadd_available_update(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
-    var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <(String, FieldValue)>[];
-    for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_record_string_field_value(deserializer));
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_available_update(deserializer));
+    } else {
+      return null;
     }
-    return ans_;
-  }
-
-  @protected
-  (String, FieldValue) sse_decode_record_string_field_value(
-      SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_field0 = sse_decode_String(deserializer);
-    var var_field1 = sse_decode_field_value(deserializer);
-    return (var_field0, var_field1);
   }
 
   @protected
   int sse_decode_u_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint32();
-  }
-
-  @protected
-  BigInt sse_decode_u_64(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getBigUint64();
   }
 
   @protected
@@ -642,6 +569,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  bool sse_decode_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint8() != 0;
+  }
+
+  @protected
   void sse_encode_AnyhowException(
       AnyhowException self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -649,29 +582,41 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_DartFn_Inputs_action_Output_unit_AnyhowException(
-      FutureOr<void> Function(Action) self, SseSerializer serializer) {
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          BytebeamSdk self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_DartOpaque(
-        encode_DartFn_Inputs_action_Output_unit_AnyhowException(self),
+    sse_encode_usize(
+        (self as BytebeamSdkImpl).frbInternalSseEncode(move: true), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          BytebeamSdk self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as BytebeamSdkImpl).frbInternalSseEncode(move: false),
         serializer);
   }
 
   @protected
-  void sse_encode_DartOpaque(Object self, SseSerializer serializer) {
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          BytebeamSdk self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_isize(
-        PlatformPointerUtil.ptrToPlatformInt64(encodeDartOpaque(
-            self, portManager.dartHandlerPort, generalizedFrbRustBinding)),
+    sse_encode_usize(
+        (self as BytebeamSdkImpl).frbInternalSseEncode(move: false),
         serializer);
   }
 
   @protected
-  void sse_encode_Map_String_field_value(
-      Map<String, FieldValue> self, SseSerializer serializer) {
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          BytebeamSdk self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_list_record_string_field_value(
-        self.entries.map((e) => (e.key, e.value)).toList(), serializer);
+    sse_encode_usize(
+        (self as BytebeamSdkImpl).frbInternalSseEncode(move: null), serializer);
   }
 
   @protected
@@ -694,86 +639,40 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_action(Action self, SseSerializer serializer) {
+  void sse_encode_available_update(
+      AvailableUpdate self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.actionId, serializer);
-    sse_encode_String(self.name, serializer);
-    sse_encode_String(self.payload, serializer);
+    sse_encode_String(self.url, serializer);
+    sse_encode_String(self.version, serializer);
+    sse_encode_String(self.checksum, serializer);
+    sse_encode_u_32(self.size, serializer);
   }
 
   @protected
-  void sse_encode_bool(bool self, SseSerializer serializer) {
+  void sse_encode_box_autoadd_available_update(
+      AvailableUpdate self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putUint8(self ? 1 : 0);
+    sse_encode_available_update(self, serializer);
   }
 
   @protected
-  void sse_encode_box_autoadd_bytebeam_payload(
-      BytebeamPayload self, SseSerializer serializer) {
+  void sse_encode_bytebeam_certificates(
+      BytebeamCertificates self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_bytebeam_payload(self, serializer);
+    sse_encode_String(self.caCertificate, serializer);
+    sse_encode_String(self.deviceCertificate, serializer);
+    sse_encode_String(self.devicePrivateKey, serializer);
   }
 
   @protected
-  void sse_encode_bytebeam_payload(
-      BytebeamPayload self, SseSerializer serializer) {
+  void sse_encode_bytebeam_credentials(
+      BytebeamCredentials self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_String(self.stream, serializer);
-    sse_encode_u_32(self.sequence, serializer);
-    sse_encode_u_64(self.timestamp, serializer);
-    sse_encode_Map_String_field_value(self.payload, serializer);
-  }
-
-  @protected
-  void sse_encode_f_64(double self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putFloat64(self);
-  }
-
-  @protected
-  void sse_encode_field_value(FieldValue self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    switch (self) {
-      case FieldValue_Null():
-        sse_encode_i_32(0, serializer);
-      case FieldValue_String(field0: final field0):
-        sse_encode_i_32(1, serializer);
-        sse_encode_String(field0, serializer);
-      case FieldValue_Int(field0: final field0):
-        sse_encode_i_32(2, serializer);
-        sse_encode_i_64(field0, serializer);
-      case FieldValue_Bool(field0: final field0):
-        sse_encode_i_32(3, serializer);
-        sse_encode_bool(field0, serializer);
-      case FieldValue_Float(field0: final field0):
-        sse_encode_i_32(4, serializer);
-        sse_encode_f_64(field0, serializer);
-      case FieldValue_Array(field0: final field0):
-        sse_encode_i_32(5, serializer);
-        sse_encode_list_field_value(field0, serializer);
-    }
-  }
-
-  @protected
-  void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putPlatformInt64(self);
-  }
-
-  @protected
-  void sse_encode_isize(PlatformInt64 self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putPlatformInt64(self);
-  }
-
-  @protected
-  void sse_encode_list_field_value(
-      List<FieldValue> self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.length, serializer);
-    for (final item in self) {
-      sse_encode_field_value(item, serializer);
-    }
+    sse_encode_String(self.projectId, serializer);
+    sse_encode_String(self.deviceId, serializer);
+    sse_encode_String(self.apiUrl, serializer);
+    sse_encode_bytebeam_certificates(self.authentication, serializer);
   }
 
   @protected
@@ -785,33 +684,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_list_record_string_field_value(
-      List<(String, FieldValue)> self, SseSerializer serializer) {
+  void sse_encode_opt_box_autoadd_available_update(
+      AvailableUpdate? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.length, serializer);
-    for (final item in self) {
-      sse_encode_record_string_field_value(item, serializer);
-    }
-  }
 
-  @protected
-  void sse_encode_record_string_field_value(
-      (String, FieldValue) self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_String(self.$1, serializer);
-    sse_encode_field_value(self.$2, serializer);
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_available_update(self, serializer);
+    }
   }
 
   @protected
   void sse_encode_u_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint32(self);
-  }
-
-  @protected
-  void sse_encode_u_64(BigInt self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putBigUint64(self);
   }
 
   @protected
@@ -836,4 +722,48 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putInt32(self);
   }
+
+  @protected
+  void sse_encode_bool(bool self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint8(self ? 1 : 0);
+  }
+}
+
+@sealed
+class BytebeamSdkImpl extends RustOpaque implements BytebeamSdk {
+  // Not to be used by end users
+  BytebeamSdkImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  BytebeamSdkImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_BytebeamSdk,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_BytebeamSdk,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_BytebeamSdkPtr,
+  );
+
+  BytebeamCredentials get credentials =>
+      RustLib.instance.api.crateApiBytebeamSdkAutoAccessorGetCredentials(
+        that: this,
+      );
+
+  set credentials(BytebeamCredentials credentials) =>
+      RustLib.instance.api.crateApiBytebeamSdkAutoAccessorSetCredentials(
+          that: this, credentials: credentials);
+
+  Future<Uint8List> downloadUpdate({required AvailableUpdate update}) =>
+      RustLib.instance.api
+          .crateApiBytebeamSdkDownloadUpdate(that: this, update: update);
+
+  Future<AvailableUpdate?> fetchAvailableUpdate() =>
+      RustLib.instance.api.crateApiBytebeamSdkFetchAvailableUpdate(
+        that: this,
+      );
 }

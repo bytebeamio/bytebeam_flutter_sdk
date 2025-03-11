@@ -3,23 +3,116 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
-import 'api/types.dart';
 import 'frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-bool sdkInitialized() => RustLib.instance.api.crateApiSdkInitialized();
+// These functions are ignored because they are not marked as `pub`: `create_agent`, `parse_impl`
+// These types are ignored because they are not used by any `pub` functions: `AvailableUpdateResponse`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `fmt`, `fmt`
 
-void initializeBytebeamSdk(
-        {required String deviceJson,
-        required String configToml,
-        required FutureOr<void> Function(Action) actionsCallback}) =>
-    RustLib.instance.api.crateApiInitializeBytebeamSdk(
-        deviceJson: deviceJson,
-        configToml: configToml,
-        actionsCallback: actionsCallback);
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BytebeamSdk>>
+abstract class BytebeamSdk implements RustOpaqueInterface {
+  BytebeamCredentials get credentials;
 
-void disconnectBytebeamClient() =>
-    RustLib.instance.api.crateApiDisconnectBytebeamClient();
+  set credentials(BytebeamCredentials credentials);
 
-void sendMessage({required BytebeamPayload payload}) =>
-    RustLib.instance.api.crateApiSendMessage(payload: payload);
+  Future<Uint8List> downloadUpdate({required AvailableUpdate update});
+
+  Future<AvailableUpdate?> fetchAvailableUpdate();
+
+  static Future<BytebeamSdk> parse({required String creds}) =>
+      RustLib.instance.api.crateApiBytebeamSdkParse(creds: creds);
+}
+
+class AvailableUpdate {
+  final String actionId;
+  final String url;
+  final String version;
+  final String checksum;
+  final int size;
+
+  const AvailableUpdate({
+    required this.actionId,
+    required this.url,
+    required this.version,
+    required this.checksum,
+    required this.size,
+  });
+
+  @override
+  int get hashCode =>
+      actionId.hashCode ^
+      url.hashCode ^
+      version.hashCode ^
+      checksum.hashCode ^
+      size.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AvailableUpdate &&
+          runtimeType == other.runtimeType &&
+          actionId == other.actionId &&
+          url == other.url &&
+          version == other.version &&
+          checksum == other.checksum &&
+          size == other.size;
+}
+
+class BytebeamCertificates {
+  final String caCertificate;
+  final String deviceCertificate;
+  final String devicePrivateKey;
+
+  const BytebeamCertificates({
+    required this.caCertificate,
+    required this.deviceCertificate,
+    required this.devicePrivateKey,
+  });
+
+  @override
+  int get hashCode =>
+      caCertificate.hashCode ^
+      deviceCertificate.hashCode ^
+      devicePrivateKey.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BytebeamCertificates &&
+          runtimeType == other.runtimeType &&
+          caCertificate == other.caCertificate &&
+          deviceCertificate == other.deviceCertificate &&
+          devicePrivateKey == other.devicePrivateKey;
+}
+
+class BytebeamCredentials {
+  final String projectId;
+  final String deviceId;
+  final String apiUrl;
+  final BytebeamCertificates authentication;
+
+  const BytebeamCredentials({
+    required this.projectId,
+    required this.deviceId,
+    required this.apiUrl,
+    required this.authentication,
+  });
+
+  @override
+  int get hashCode =>
+      projectId.hashCode ^
+      deviceId.hashCode ^
+      apiUrl.hashCode ^
+      authentication.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BytebeamCredentials &&
+          runtimeType == other.runtimeType &&
+          projectId == other.projectId &&
+          deviceId == other.deviceId &&
+          apiUrl == other.apiUrl &&
+          authentication == other.authentication;
+}

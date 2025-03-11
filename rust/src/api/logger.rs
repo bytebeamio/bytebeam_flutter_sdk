@@ -1,17 +1,20 @@
 use std::io::Write;
-
+use std::sync::Mutex;
 use anyhow::Result;
 use tracing_subscriber::{fmt::MakeWriter, EnvFilter};
 use crate::frb_generated::StreamSink;
 
-struct LogSink {
-    sink: StreamSink<String>,
-}
+static CURRENT_LOG_SINK: Mutex<Option<StreamSink<String>>> = Mutex::new(None);
+struct LogSink;
 
 impl<'a> Write for &'a LogSink {
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
-        let line = String::from_utf8_lossy(buf).to_string();
-        let _ = self.sink.add(line);
+        if let Ok(mg) = CURRENT_LOG_SINK.lock() {
+            if let Some(sink) = mg.as_ref() {
+                let line = String::from_utf8_lossy(buf).to_string();
+                let _ = sink.add(line);
+            }
+        }
         Ok(buf.len())
     }
 
@@ -28,16 +31,23 @@ impl<'a> MakeWriter<'a> for LogSink {
     }
 }
 
-#[flutter_rust_bridge::frb(sync)]
+#[flutter_rust_bridge::frb]
 pub fn setup_logs(sink: StreamSink<String>) -> Result<()> {
-    let log_sink = LogSink { sink };
+    match CURRENT_LOG_SINK.lock() {
+        Ok(mut ptr) => {
+            *ptr = Some(sink);
+        }
+        Err(_) => {
+            log::error!("log sink poisoned!");
+        }
+    }
 
     let _ = tracing_subscriber::fmt()
         .with_ansi(false)
         .with_max_level(tracing::Level::TRACE)
-        .with_env_filter(EnvFilter::new("info,uplink::base::serializer=warn,uplink::base::mqtt=warn,uplink::base::bridge::stream=warn"))
+        .with_env_filter(EnvFilter::new("info"))
         .compact()
-        .with_writer(log_sink)
+        .with_writer(LogSink)
         .try_init();
 
     Ok(())

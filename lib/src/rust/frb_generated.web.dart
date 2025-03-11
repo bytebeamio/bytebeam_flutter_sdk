@@ -8,7 +8,6 @@
 
 import 'api.dart';
 import 'api/logger.dart';
-import 'api/types.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -22,18 +21,32 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     required super.portManager,
   });
 
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_BytebeamSdkPtr => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk;
+
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw);
 
   @protected
-  FutureOr<void> Function(Action)
-      dco_decode_DartFn_Inputs_action_Output_unit_AnyhowException(dynamic raw);
+  BytebeamSdk
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          dynamic raw);
 
   @protected
-  Object dco_decode_DartOpaque(dynamic raw);
+  BytebeamSdk
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          dynamic raw);
 
   @protected
-  Map<String, FieldValue> dco_decode_Map_String_field_value(dynamic raw);
+  BytebeamSdk
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          dynamic raw);
+
+  @protected
+  BytebeamSdk
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          dynamic raw);
 
   @protected
   RustStreamSink<String> dco_decode_StreamSink_String_Sse(dynamic raw);
@@ -42,47 +55,25 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String dco_decode_String(dynamic raw);
 
   @protected
-  Action dco_decode_action(dynamic raw);
+  AvailableUpdate dco_decode_available_update(dynamic raw);
 
   @protected
-  bool dco_decode_bool(dynamic raw);
+  AvailableUpdate dco_decode_box_autoadd_available_update(dynamic raw);
 
   @protected
-  BytebeamPayload dco_decode_box_autoadd_bytebeam_payload(dynamic raw);
+  BytebeamCertificates dco_decode_bytebeam_certificates(dynamic raw);
 
   @protected
-  BytebeamPayload dco_decode_bytebeam_payload(dynamic raw);
-
-  @protected
-  double dco_decode_f_64(dynamic raw);
-
-  @protected
-  FieldValue dco_decode_field_value(dynamic raw);
-
-  @protected
-  PlatformInt64 dco_decode_i_64(dynamic raw);
-
-  @protected
-  PlatformInt64 dco_decode_isize(dynamic raw);
-
-  @protected
-  List<FieldValue> dco_decode_list_field_value(dynamic raw);
+  BytebeamCredentials dco_decode_bytebeam_credentials(dynamic raw);
 
   @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
-  List<(String, FieldValue)> dco_decode_list_record_string_field_value(
-      dynamic raw);
-
-  @protected
-  (String, FieldValue) dco_decode_record_string_field_value(dynamic raw);
+  AvailableUpdate? dco_decode_opt_box_autoadd_available_update(dynamic raw);
 
   @protected
   int dco_decode_u_32(dynamic raw);
-
-  @protected
-  BigInt dco_decode_u_64(dynamic raw);
 
   @protected
   int dco_decode_u_8(dynamic raw);
@@ -97,11 +88,24 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
 
   @protected
-  Object sse_decode_DartOpaque(SseDeserializer deserializer);
+  BytebeamSdk
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          SseDeserializer deserializer);
 
   @protected
-  Map<String, FieldValue> sse_decode_Map_String_field_value(
-      SseDeserializer deserializer);
+  BytebeamSdk
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          SseDeserializer deserializer);
+
+  @protected
+  BytebeamSdk
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          SseDeserializer deserializer);
+
+  @protected
+  BytebeamSdk
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          SseDeserializer deserializer);
 
   @protected
   RustStreamSink<String> sse_decode_StreamSink_String_Sse(
@@ -111,49 +115,29 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
-  Action sse_decode_action(SseDeserializer deserializer);
+  AvailableUpdate sse_decode_available_update(SseDeserializer deserializer);
 
   @protected
-  bool sse_decode_bool(SseDeserializer deserializer);
-
-  @protected
-  BytebeamPayload sse_decode_box_autoadd_bytebeam_payload(
+  AvailableUpdate sse_decode_box_autoadd_available_update(
       SseDeserializer deserializer);
 
   @protected
-  BytebeamPayload sse_decode_bytebeam_payload(SseDeserializer deserializer);
+  BytebeamCertificates sse_decode_bytebeam_certificates(
+      SseDeserializer deserializer);
 
   @protected
-  double sse_decode_f_64(SseDeserializer deserializer);
-
-  @protected
-  FieldValue sse_decode_field_value(SseDeserializer deserializer);
-
-  @protected
-  PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
-
-  @protected
-  PlatformInt64 sse_decode_isize(SseDeserializer deserializer);
-
-  @protected
-  List<FieldValue> sse_decode_list_field_value(SseDeserializer deserializer);
+  BytebeamCredentials sse_decode_bytebeam_credentials(
+      SseDeserializer deserializer);
 
   @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
-  List<(String, FieldValue)> sse_decode_list_record_string_field_value(
-      SseDeserializer deserializer);
-
-  @protected
-  (String, FieldValue) sse_decode_record_string_field_value(
+  AvailableUpdate? sse_decode_opt_box_autoadd_available_update(
       SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_32(SseDeserializer deserializer);
-
-  @protected
-  BigInt sse_decode_u_64(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_8(SseDeserializer deserializer);
@@ -168,19 +152,31 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
+  bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
   void sse_encode_AnyhowException(
       AnyhowException self, SseSerializer serializer);
 
   @protected
-  void sse_encode_DartFn_Inputs_action_Output_unit_AnyhowException(
-      FutureOr<void> Function(Action) self, SseSerializer serializer);
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          BytebeamSdk self, SseSerializer serializer);
 
   @protected
-  void sse_encode_DartOpaque(Object self, SseSerializer serializer);
+  void
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          BytebeamSdk self, SseSerializer serializer);
 
   @protected
-  void sse_encode_Map_String_field_value(
-      Map<String, FieldValue> self, SseSerializer serializer);
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          BytebeamSdk self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          BytebeamSdk self, SseSerializer serializer);
 
   @protected
   void sse_encode_StreamSink_String_Sse(
@@ -190,52 +186,31 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
-  void sse_encode_action(Action self, SseSerializer serializer);
+  void sse_encode_available_update(
+      AvailableUpdate self, SseSerializer serializer);
 
   @protected
-  void sse_encode_bool(bool self, SseSerializer serializer);
+  void sse_encode_box_autoadd_available_update(
+      AvailableUpdate self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_bytebeam_payload(
-      BytebeamPayload self, SseSerializer serializer);
+  void sse_encode_bytebeam_certificates(
+      BytebeamCertificates self, SseSerializer serializer);
 
   @protected
-  void sse_encode_bytebeam_payload(
-      BytebeamPayload self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_f_64(double self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_field_value(FieldValue self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_isize(PlatformInt64 self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_list_field_value(
-      List<FieldValue> self, SseSerializer serializer);
+  void sse_encode_bytebeam_credentials(
+      BytebeamCredentials self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_record_string_field_value(
-      List<(String, FieldValue)> self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_record_string_field_value(
-      (String, FieldValue) self, SseSerializer serializer);
+  void sse_encode_opt_box_autoadd_available_update(
+      AvailableUpdate? self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_32(int self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_u_64(BigInt self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_8(int self, SseSerializer serializer);
@@ -248,12 +223,27 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_bool(bool self, SseSerializer serializer);
 }
 
 // Section: wire_class
 
 class RustLibWire implements BaseWire {
   RustLibWire.fromExternalLibrary(ExternalLibrary lib);
+
+  void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          int ptr) =>
+      wasmModule
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+              ptr);
+
+  void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          int ptr) =>
+      wasmModule
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+              ptr);
 }
 
 @JS('wasm_bindgen')
@@ -261,4 +251,12 @@ external RustLibWasmModule get wasmModule;
 
 @JS()
 @anonymous
-extension type RustLibWasmModule._(JSObject _) implements JSObject {}
+extension type RustLibWasmModule._(JSObject _) implements JSObject {
+  external void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          int ptr);
+
+  external void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+          int ptr);
+}

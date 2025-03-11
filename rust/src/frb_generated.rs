@@ -25,6 +25,7 @@
 
 // Section: imports
 
+use crate::api::*;
 use flutter_rust_bridge::for_generated::byteorder::{NativeEndian, ReadBytesExt, WriteBytesExt};
 use flutter_rust_bridge::for_generated::{transform_result_dco, Lifetimeable, Lockable};
 use flutter_rust_bridge::{Handler, IntoIntoDart};
@@ -37,7 +38,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.7.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 606680204;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1823117066;
 
 // Section: executor
 
@@ -45,14 +46,14 @@ flutter_rust_bridge::frb_generated_default_handler!();
 
 // Section: wire_funcs
 
-fn wire__crate__api__disconnect_bytebeam_client_impl(
+fn wire__crate__api__BytebeamSdk_auto_accessor_get_credentials_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "disconnect_bytebeam_client",
+            debug_name: "BytebeamSdk_auto_accessor_get_credentials",
             port: None,
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
         },
@@ -66,26 +67,93 @@ fn wire__crate__api__disconnect_bytebeam_client_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BytebeamSdk>,
+            >>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, false,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                        _ => unreachable!(),
+                    }
+                }
+                let api_that_guard = api_that_guard.unwrap();
+                let output_ok = Result::<_, ()>::Ok(api_that_guard.credentials.clone())?;
+                Ok(output_ok)
+            })())
+        },
+    )
+}
+fn wire__crate__api__BytebeamSdk_auto_accessor_set_credentials_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "BytebeamSdk_auto_accessor_set_credentials",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BytebeamSdk>,
+            >>::sse_decode(&mut deserializer);
+            let api_credentials = <crate::api::BytebeamCredentials>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse::<_, ()>((move || {
+                let mut api_that_guard = None;
+                let decode_indices_ =
+                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                            &api_that, 0, true,
+                        ),
+                    ]);
+                for i in decode_indices_ {
+                    match i {
+                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref_mut()),
+                        _ => unreachable!(),
+                    }
+                }
+                let mut api_that_guard = api_that_guard.unwrap();
                 let output_ok = Result::<_, ()>::Ok({
-                    crate::api::disconnect_bytebeam_client();
+                    {
+                        api_that_guard.credentials = api_credentials;
+                    };
                 })?;
                 Ok(output_ok)
             })())
         },
     )
 }
-fn wire__crate__api__initialize_bytebeam_sdk_impl(
+fn wire__crate__api__BytebeamSdk_download_update_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
-) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "initialize_bytebeam_sdk",
-            port: None,
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+            debug_name: "BytebeamSdk_download_update",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
         move || {
             let message = unsafe {
@@ -97,96 +165,143 @@ fn wire__crate__api__initialize_bytebeam_sdk_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_device_json = <String>::sse_decode(&mut deserializer);
-            let api_config_toml = <String>::sse_decode(&mut deserializer);
-            let api_actions_callback = decode_DartFn_Inputs_action_Output_unit_AnyhowException(
-                <flutter_rust_bridge::DartOpaque>::sse_decode(&mut deserializer),
-            );
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BytebeamSdk>,
+            >>::sse_decode(&mut deserializer);
+            let api_update = <crate::api::AvailableUpdate>::sse_decode(&mut deserializer);
             deserializer.end();
-            transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
-                (move || {
-                    let output_ok = crate::api::initialize_bytebeam_sdk(
-                        api_device_json,
-                        api_config_toml,
-                        api_actions_callback,
-                    )?;
+            move |context| async move {
+                transform_result_sse::<_, String>(
+                    (move || async move {
+                        let mut api_that_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                    &api_that, 0, false,
+                                )],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => {
+                                    api_that_guard =
+                                        Some(api_that.lockable_decode_async_ref().await)
+                                }
+                                _ => unreachable!(),
+                            }
+                        }
+                        let api_that_guard = api_that_guard.unwrap();
+                        let output_ok =
+                            crate::api::BytebeamSdk::download_update(&*api_that_guard, api_update)
+                                .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__BytebeamSdk_fetch_available_update_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "BytebeamSdk_fetch_available_update",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BytebeamSdk>,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, String>(
+                    (move || async move {
+                        let mut api_that_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                    &api_that, 0, false,
+                                )],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => {
+                                    api_that_guard =
+                                        Some(api_that.lockable_decode_async_ref().await)
+                                }
+                                _ => unreachable!(),
+                            }
+                        }
+                        let api_that_guard = api_that_guard.unwrap();
+                        let output_ok =
+                            crate::api::BytebeamSdk::fetch_available_update(&*api_that_guard)
+                                .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
+fn wire__crate__api__BytebeamSdk_parse_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "BytebeamSdk_parse",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_creds = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, String>((move || {
+                    let output_ok = crate::api::BytebeamSdk::parse(api_creds)?;
                     Ok(output_ok)
-                })(),
-            )
-        },
-    )
-}
-fn wire__crate__api__sdk_initialized_impl(
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "sdk_initialized",
-            port: None,
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            deserializer.end();
-            transform_result_sse::<_, ()>((move || {
-                let output_ok = Result::<_, ()>::Ok(crate::api::sdk_initialized())?;
-                Ok(output_ok)
-            })())
-        },
-    )
-}
-fn wire__crate__api__send_message_impl(
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "send_message",
-            port: None,
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_payload = <crate::api::types::BytebeamPayload>::sse_decode(&mut deserializer);
-            deserializer.end();
-            transform_result_sse::<_, ()>((move || {
-                let output_ok = Result::<_, ()>::Ok({
-                    crate::api::send_message(api_payload);
-                })?;
-                Ok(output_ok)
-            })())
+                })())
+            }
         },
     )
 }
 fn wire__crate__api__logger__setup_logs_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
-) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
             debug_name: "setup_logs",
-            port: None,
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
         move || {
             let message = unsafe {
@@ -203,53 +318,23 @@ fn wire__crate__api__logger__setup_logs_impl(
                     &mut deserializer,
                 );
             deserializer.end();
-            transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
-                (move || {
-                    let output_ok = crate::api::logger::setup_logs(api_sink)?;
-                    Ok(output_ok)
-                })(),
-            )
+            move |context| {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || {
+                        let output_ok = crate::api::logger::setup_logs(api_sink)?;
+                        Ok(output_ok)
+                    })(),
+                )
+            }
         },
     )
 }
 
 // Section: related_funcs
 
-fn decode_DartFn_Inputs_action_Output_unit_AnyhowException(
-    dart_opaque: flutter_rust_bridge::DartOpaque,
-) -> impl Fn(crate::api::types::Action) -> flutter_rust_bridge::DartFnFuture<()> {
-    use flutter_rust_bridge::IntoDart;
-
-    async fn body(
-        dart_opaque: flutter_rust_bridge::DartOpaque,
-        arg0: crate::api::types::Action,
-    ) -> () {
-        let args = vec![arg0.into_into_dart().into_dart()];
-        let message = FLUTTER_RUST_BRIDGE_HANDLER
-            .dart_fn_invoke(dart_opaque, args)
-            .await;
-
-        let mut deserializer = flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-        let action = deserializer.cursor.read_u8().unwrap();
-        let ans = match action {
-            0 => std::result::Result::Ok(<()>::sse_decode(&mut deserializer)),
-            1 => std::result::Result::Err(
-                <flutter_rust_bridge::for_generated::anyhow::Error>::sse_decode(&mut deserializer),
-            ),
-            _ => unreachable!(),
-        };
-        deserializer.end();
-        let ans = ans.expect("Dart throws exception but Rust side assume it is not failable");
-        ans
-    }
-
-    move |arg0: crate::api::types::Action| {
-        flutter_rust_bridge::for_generated::convert_into_dart_fn_future(body(
-            dart_opaque.clone(),
-            arg0,
-        ))
-    }
-}
+flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
+    flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BytebeamSdk>
+);
 
 // Section: dart2rust
 
@@ -261,19 +346,23 @@ impl SseDecode for flutter_rust_bridge::for_generated::anyhow::Error {
     }
 }
 
-impl SseDecode for flutter_rust_bridge::DartOpaque {
+impl SseDecode for BytebeamSdk {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut inner = <usize>::sse_decode(deserializer);
-        return unsafe { flutter_rust_bridge::for_generated::sse_decode_dart_opaque(inner) };
+        let mut inner = <RustOpaqueMoi<
+            flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BytebeamSdk>,
+        >>::sse_decode(deserializer);
+        return flutter_rust_bridge::for_generated::rust_auto_opaque_decode_owned(inner);
     }
 }
 
-impl SseDecode for std::collections::HashMap<String, crate::api::types::FieldValue> {
+impl SseDecode
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BytebeamSdk>>
+{
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut inner = <Vec<(String, crate::api::types::FieldValue)>>::sse_decode(deserializer);
-        return inner.into_iter().collect();
+        let mut inner = <usize>::sse_decode(deserializer);
+        return decode_rust_opaque_moi(inner);
     }
 }
 
@@ -293,111 +382,51 @@ impl SseDecode for String {
     }
 }
 
-impl SseDecode for crate::api::types::Action {
+impl SseDecode for crate::api::AvailableUpdate {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_actionId = <String>::sse_decode(deserializer);
-        let mut var_name = <String>::sse_decode(deserializer);
-        let mut var_payload = <String>::sse_decode(deserializer);
-        return crate::api::types::Action {
+        let mut var_url = <String>::sse_decode(deserializer);
+        let mut var_version = <String>::sse_decode(deserializer);
+        let mut var_checksum = <String>::sse_decode(deserializer);
+        let mut var_size = <u32>::sse_decode(deserializer);
+        return crate::api::AvailableUpdate {
             action_id: var_actionId,
-            name: var_name,
-            payload: var_payload,
+            url: var_url,
+            version: var_version,
+            checksum: var_checksum,
+            size: var_size,
         };
     }
 }
 
-impl SseDecode for bool {
+impl SseDecode for crate::api::BytebeamCertificates {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        deserializer.cursor.read_u8().unwrap() != 0
-    }
-}
-
-impl SseDecode for crate::api::types::BytebeamPayload {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_stream = <String>::sse_decode(deserializer);
-        let mut var_sequence = <u32>::sse_decode(deserializer);
-        let mut var_timestamp = <u64>::sse_decode(deserializer);
-        let mut var_payload =
-            <std::collections::HashMap<String, crate::api::types::FieldValue>>::sse_decode(
-                deserializer,
-            );
-        return crate::api::types::BytebeamPayload {
-            stream: var_stream,
-            sequence: var_sequence,
-            timestamp: var_timestamp,
-            payload: var_payload,
+        let mut var_caCertificate = <String>::sse_decode(deserializer);
+        let mut var_deviceCertificate = <String>::sse_decode(deserializer);
+        let mut var_devicePrivateKey = <String>::sse_decode(deserializer);
+        return crate::api::BytebeamCertificates {
+            ca_certificate: var_caCertificate,
+            device_certificate: var_deviceCertificate,
+            device_private_key: var_devicePrivateKey,
         };
     }
 }
 
-impl SseDecode for f64 {
+impl SseDecode for crate::api::BytebeamCredentials {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        deserializer.cursor.read_f64::<NativeEndian>().unwrap()
-    }
-}
-
-impl SseDecode for crate::api::types::FieldValue {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut tag_ = <i32>::sse_decode(deserializer);
-        match tag_ {
-            0 => {
-                return crate::api::types::FieldValue::Null;
-            }
-            1 => {
-                let mut var_field0 = <String>::sse_decode(deserializer);
-                return crate::api::types::FieldValue::String(var_field0);
-            }
-            2 => {
-                let mut var_field0 = <i64>::sse_decode(deserializer);
-                return crate::api::types::FieldValue::Int(var_field0);
-            }
-            3 => {
-                let mut var_field0 = <bool>::sse_decode(deserializer);
-                return crate::api::types::FieldValue::Bool(var_field0);
-            }
-            4 => {
-                let mut var_field0 = <f64>::sse_decode(deserializer);
-                return crate::api::types::FieldValue::Float(var_field0);
-            }
-            5 => {
-                let mut var_field0 = <Vec<crate::api::types::FieldValue>>::sse_decode(deserializer);
-                return crate::api::types::FieldValue::Array(var_field0);
-            }
-            _ => {
-                unimplemented!("");
-            }
-        }
-    }
-}
-
-impl SseDecode for i64 {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        deserializer.cursor.read_i64::<NativeEndian>().unwrap()
-    }
-}
-
-impl SseDecode for isize {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        deserializer.cursor.read_i64::<NativeEndian>().unwrap() as _
-    }
-}
-
-impl SseDecode for Vec<crate::api::types::FieldValue> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut len_ = <i32>::sse_decode(deserializer);
-        let mut ans_ = vec![];
-        for idx_ in 0..len_ {
-            ans_.push(<crate::api::types::FieldValue>::sse_decode(deserializer));
-        }
-        return ans_;
+        let mut var_projectId = <String>::sse_decode(deserializer);
+        let mut var_deviceId = <String>::sse_decode(deserializer);
+        let mut var_apiUrl = <String>::sse_decode(deserializer);
+        let mut var_authentication = <crate::api::BytebeamCertificates>::sse_decode(deserializer);
+        return crate::api::BytebeamCredentials {
+            project_id: var_projectId,
+            device_id: var_deviceId,
+            api_url: var_apiUrl,
+            authentication: var_authentication,
+        };
     }
 }
 
@@ -413,26 +442,14 @@ impl SseDecode for Vec<u8> {
     }
 }
 
-impl SseDecode for Vec<(String, crate::api::types::FieldValue)> {
+impl SseDecode for Option<crate::api::AvailableUpdate> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut len_ = <i32>::sse_decode(deserializer);
-        let mut ans_ = vec![];
-        for idx_ in 0..len_ {
-            ans_.push(<(String, crate::api::types::FieldValue)>::sse_decode(
-                deserializer,
-            ));
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::api::AvailableUpdate>::sse_decode(deserializer));
+        } else {
+            return None;
         }
-        return ans_;
-    }
-}
-
-impl SseDecode for (String, crate::api::types::FieldValue) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_field0 = <String>::sse_decode(deserializer);
-        let mut var_field1 = <crate::api::types::FieldValue>::sse_decode(deserializer);
-        return (var_field0, var_field1);
     }
 }
 
@@ -440,13 +457,6 @@ impl SseDecode for u32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         deserializer.cursor.read_u32::<NativeEndian>().unwrap()
-    }
-}
-
-impl SseDecode for u64 {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        deserializer.cursor.read_u64::<NativeEndian>().unwrap()
     }
 }
 
@@ -476,6 +486,13 @@ impl SseDecode for i32 {
     }
 }
 
+impl SseDecode for bool {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        deserializer.cursor.read_u8().unwrap() != 0
+    }
+}
+
 fn pde_ffi_dispatcher_primary_impl(
     func_id: i32,
     port: flutter_rust_bridge::for_generated::MessagePort,
@@ -485,6 +502,15 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
+        3 => wire__crate__api__BytebeamSdk_download_update_impl(port, ptr, rust_vec_len, data_len),
+        4 => wire__crate__api__BytebeamSdk_fetch_available_update_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        5 => wire__crate__api__BytebeamSdk_parse_impl(port, ptr, rust_vec_len, data_len),
+        6 => wire__crate__api__logger__setup_logs_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -497,11 +523,16 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        1 => wire__crate__api__disconnect_bytebeam_client_impl(ptr, rust_vec_len, data_len),
-        2 => wire__crate__api__initialize_bytebeam_sdk_impl(ptr, rust_vec_len, data_len),
-        3 => wire__crate__api__sdk_initialized_impl(ptr, rust_vec_len, data_len),
-        4 => wire__crate__api__send_message_impl(ptr, rust_vec_len, data_len),
-        5 => wire__crate__api__logger__setup_logs_impl(ptr, rust_vec_len, data_len),
+        1 => wire__crate__api__BytebeamSdk_auto_accessor_get_credentials_impl(
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        2 => wire__crate__api__BytebeamSdk_auto_accessor_set_credentials_impl(
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
         _ => unreachable!(),
     }
 }
@@ -509,76 +540,83 @@ fn pde_ffi_dispatcher_sync_impl(
 // Section: rust2dart
 
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::api::types::Action {
+impl flutter_rust_bridge::IntoDart for FrbWrapper<BytebeamSdk> {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self.0)
+            .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for FrbWrapper<BytebeamSdk> {}
+
+impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<BytebeamSdk>> for BytebeamSdk {
+    fn into_into_dart(self) -> FrbWrapper<BytebeamSdk> {
+        self.into()
+    }
+}
+
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::AvailableUpdate {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
             self.action_id.into_into_dart().into_dart(),
-            self.name.into_into_dart().into_dart(),
-            self.payload.into_into_dart().into_dart(),
+            self.url.into_into_dart().into_dart(),
+            self.version.into_into_dart().into_dart(),
+            self.checksum.into_into_dart().into_dart(),
+            self.size.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
 }
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::api::types::Action {}
-impl flutter_rust_bridge::IntoIntoDart<crate::api::types::Action> for crate::api::types::Action {
-    fn into_into_dart(self) -> crate::api::types::Action {
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::api::AvailableUpdate {}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::AvailableUpdate>
+    for crate::api::AvailableUpdate
+{
+    fn into_into_dart(self) -> crate::api::AvailableUpdate {
         self
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::api::types::BytebeamPayload {
+impl flutter_rust_bridge::IntoDart for crate::api::BytebeamCertificates {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
-            self.stream.into_into_dart().into_dart(),
-            self.sequence.into_into_dart().into_dart(),
-            self.timestamp.into_into_dart().into_dart(),
-            self.payload.into_into_dart().into_dart(),
+            self.ca_certificate.into_into_dart().into_dart(),
+            self.device_certificate.into_into_dart().into_dart(),
+            self.device_private_key.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::api::types::BytebeamPayload
+    for crate::api::BytebeamCertificates
 {
 }
-impl flutter_rust_bridge::IntoIntoDart<crate::api::types::BytebeamPayload>
-    for crate::api::types::BytebeamPayload
+impl flutter_rust_bridge::IntoIntoDart<crate::api::BytebeamCertificates>
+    for crate::api::BytebeamCertificates
 {
-    fn into_into_dart(self) -> crate::api::types::BytebeamPayload {
+    fn into_into_dart(self) -> crate::api::BytebeamCertificates {
         self
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::api::types::FieldValue {
+impl flutter_rust_bridge::IntoDart for crate::api::BytebeamCredentials {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        match self {
-            crate::api::types::FieldValue::Null => [0.into_dart()].into_dart(),
-            crate::api::types::FieldValue::String(field0) => {
-                [1.into_dart(), field0.into_into_dart().into_dart()].into_dart()
-            }
-            crate::api::types::FieldValue::Int(field0) => {
-                [2.into_dart(), field0.into_into_dart().into_dart()].into_dart()
-            }
-            crate::api::types::FieldValue::Bool(field0) => {
-                [3.into_dart(), field0.into_into_dart().into_dart()].into_dart()
-            }
-            crate::api::types::FieldValue::Float(field0) => {
-                [4.into_dart(), field0.into_into_dart().into_dart()].into_dart()
-            }
-            crate::api::types::FieldValue::Array(field0) => {
-                [5.into_dart(), field0.into_into_dart().into_dart()].into_dart()
-            }
-            _ => {
-                unimplemented!("");
-            }
-        }
+        [
+            self.project_id.into_into_dart().into_dart(),
+            self.device_id.into_into_dart().into_dart(),
+            self.api_url.into_into_dart().into_dart(),
+            self.authentication.into_into_dart().into_dart(),
+        ]
+        .into_dart()
     }
 }
-impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::api::types::FieldValue {}
-impl flutter_rust_bridge::IntoIntoDart<crate::api::types::FieldValue>
-    for crate::api::types::FieldValue
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::BytebeamCredentials
 {
-    fn into_into_dart(self) -> crate::api::types::FieldValue {
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::BytebeamCredentials>
+    for crate::api::BytebeamCredentials
+{
+    fn into_into_dart(self) -> crate::api::BytebeamCredentials {
         self
     }
 }
@@ -590,20 +628,21 @@ impl SseEncode for flutter_rust_bridge::for_generated::anyhow::Error {
     }
 }
 
-impl SseEncode for flutter_rust_bridge::DartOpaque {
+impl SseEncode for BytebeamSdk {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <usize>::sse_encode(self.encode(), serializer);
+        <RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BytebeamSdk>>>::sse_encode(flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self), serializer);
     }
 }
 
-impl SseEncode for std::collections::HashMap<String, crate::api::types::FieldValue> {
+impl SseEncode
+    for RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BytebeamSdk>>
+{
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <Vec<(String, crate::api::types::FieldValue)>>::sse_encode(
-            self.into_iter().collect(),
-            serializer,
-        );
+        let (ptr, size) = self.sse_encode_raw();
+        <usize>::sse_encode(ptr, serializer);
+        <i32>::sse_encode(size, serializer);
     }
 }
 
@@ -621,100 +660,33 @@ impl SseEncode for String {
     }
 }
 
-impl SseEncode for crate::api::types::Action {
+impl SseEncode for crate::api::AvailableUpdate {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.action_id, serializer);
-        <String>::sse_encode(self.name, serializer);
-        <String>::sse_encode(self.payload, serializer);
+        <String>::sse_encode(self.url, serializer);
+        <String>::sse_encode(self.version, serializer);
+        <String>::sse_encode(self.checksum, serializer);
+        <u32>::sse_encode(self.size, serializer);
     }
 }
 
-impl SseEncode for bool {
+impl SseEncode for crate::api::BytebeamCertificates {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        serializer.cursor.write_u8(self as _).unwrap();
+        <String>::sse_encode(self.ca_certificate, serializer);
+        <String>::sse_encode(self.device_certificate, serializer);
+        <String>::sse_encode(self.device_private_key, serializer);
     }
 }
 
-impl SseEncode for crate::api::types::BytebeamPayload {
+impl SseEncode for crate::api::BytebeamCredentials {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <String>::sse_encode(self.stream, serializer);
-        <u32>::sse_encode(self.sequence, serializer);
-        <u64>::sse_encode(self.timestamp, serializer);
-        <std::collections::HashMap<String, crate::api::types::FieldValue>>::sse_encode(
-            self.payload,
-            serializer,
-        );
-    }
-}
-
-impl SseEncode for f64 {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        serializer.cursor.write_f64::<NativeEndian>(self).unwrap();
-    }
-}
-
-impl SseEncode for crate::api::types::FieldValue {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        match self {
-            crate::api::types::FieldValue::Null => {
-                <i32>::sse_encode(0, serializer);
-            }
-            crate::api::types::FieldValue::String(field0) => {
-                <i32>::sse_encode(1, serializer);
-                <String>::sse_encode(field0, serializer);
-            }
-            crate::api::types::FieldValue::Int(field0) => {
-                <i32>::sse_encode(2, serializer);
-                <i64>::sse_encode(field0, serializer);
-            }
-            crate::api::types::FieldValue::Bool(field0) => {
-                <i32>::sse_encode(3, serializer);
-                <bool>::sse_encode(field0, serializer);
-            }
-            crate::api::types::FieldValue::Float(field0) => {
-                <i32>::sse_encode(4, serializer);
-                <f64>::sse_encode(field0, serializer);
-            }
-            crate::api::types::FieldValue::Array(field0) => {
-                <i32>::sse_encode(5, serializer);
-                <Vec<crate::api::types::FieldValue>>::sse_encode(field0, serializer);
-            }
-            _ => {
-                unimplemented!("");
-            }
-        }
-    }
-}
-
-impl SseEncode for i64 {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        serializer.cursor.write_i64::<NativeEndian>(self).unwrap();
-    }
-}
-
-impl SseEncode for isize {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        serializer
-            .cursor
-            .write_i64::<NativeEndian>(self as _)
-            .unwrap();
-    }
-}
-
-impl SseEncode for Vec<crate::api::types::FieldValue> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <i32>::sse_encode(self.len() as _, serializer);
-        for item in self {
-            <crate::api::types::FieldValue>::sse_encode(item, serializer);
-        }
+        <String>::sse_encode(self.project_id, serializer);
+        <String>::sse_encode(self.device_id, serializer);
+        <String>::sse_encode(self.api_url, serializer);
+        <crate::api::BytebeamCertificates>::sse_encode(self.authentication, serializer);
     }
 }
 
@@ -728,21 +700,13 @@ impl SseEncode for Vec<u8> {
     }
 }
 
-impl SseEncode for Vec<(String, crate::api::types::FieldValue)> {
+impl SseEncode for Option<crate::api::AvailableUpdate> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <i32>::sse_encode(self.len() as _, serializer);
-        for item in self {
-            <(String, crate::api::types::FieldValue)>::sse_encode(item, serializer);
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::api::AvailableUpdate>::sse_encode(value, serializer);
         }
-    }
-}
-
-impl SseEncode for (String, crate::api::types::FieldValue) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <String>::sse_encode(self.0, serializer);
-        <crate::api::types::FieldValue>::sse_encode(self.1, serializer);
     }
 }
 
@@ -750,13 +714,6 @@ impl SseEncode for u32 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         serializer.cursor.write_u32::<NativeEndian>(self).unwrap();
-    }
-}
-
-impl SseEncode for u64 {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        serializer.cursor.write_u64::<NativeEndian>(self).unwrap();
     }
 }
 
@@ -789,6 +746,13 @@ impl SseEncode for i32 {
     }
 }
 
+impl SseEncode for bool {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        serializer.cursor.write_u8(self as _).unwrap();
+    }
+}
+
 #[cfg(not(target_family = "wasm"))]
 mod io {
     // This file is automatically generated, so please do not edit it.
@@ -797,6 +761,7 @@ mod io {
     // Section: imports
 
     use super::*;
+    use crate::api::*;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
     };
@@ -806,6 +771,20 @@ mod io {
     // Section: boilerplate
 
     flutter_rust_bridge::frb_generated_boilerplate_io!();
+
+    #[no_mangle]
+    pub extern "C" fn frbgen_bytebeam_flutter_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BytebeamSdk>>::increment_strong_count(ptr as _);
+    }
+
+    #[no_mangle]
+    pub extern "C" fn frbgen_bytebeam_flutter_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BytebeamSdk>>::decrement_strong_count(ptr as _);
+    }
 }
 #[cfg(not(target_family = "wasm"))]
 pub use io::*;
@@ -819,6 +798,7 @@ mod web {
     // Section: imports
 
     use super::*;
+    use crate::api::*;
     use flutter_rust_bridge::for_generated::byteorder::{
         NativeEndian, ReadBytesExt, WriteBytesExt,
     };
@@ -830,6 +810,20 @@ mod web {
     // Section: boilerplate
 
     flutter_rust_bridge::frb_generated_boilerplate_web!();
+
+    #[wasm_bindgen]
+    pub fn rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BytebeamSdk>>::increment_strong_count(ptr as _);
+    }
+
+    #[wasm_bindgen]
+    pub fn rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+        ptr: *const std::ffi::c_void,
+    ) {
+        MoiArc::<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BytebeamSdk>>::decrement_strong_count(ptr as _);
+    }
 }
 #[cfg(target_family = "wasm")]
 pub use web::*;
