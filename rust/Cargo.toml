@@ -10,11 +10,8 @@ serial = { git = "https://github.com/bytebeamio/serial-rs", branch = "android_fi
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
-flutter_rust_bridge = "=2.7.0"
-ureq = { version = "3.0.8", features = ["rustls"], default-features = false }
-log = "0.4.25"
+flutter_rust_bridge = { version = "=2.7.0", features = ["log"] }
+ureq = { version = "3.0.8", features = ["rustls", "json"], default-features = false }
 anyhow = "1.0.75"
-tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
-tracing = "0.1.41"
 serde_json = "1.0.137"
 serde = { version = "1.0.217", features = ["derive"] }

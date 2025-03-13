@@ -4,7 +4,6 @@
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
 import 'api.dart';
-import 'api/logger.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -67,7 +66,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.7.0';
 
   @override
-  int get rustContentHash => 1823117066;
+  int get rustContentHash => 861948925;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -92,7 +91,11 @@ abstract class RustLibApi extends BaseApi {
 
   Future<BytebeamSdk> crateApiBytebeamSdkParse({required String creds});
 
-  Stream<String> crateApiLoggerSetupLogs();
+  Future<void> crateApiBytebeamSdkUploadMessageFfi(
+      {required BytebeamSdk that, required StreamMessageFfi message});
+
+  Future<void> crateApiBytebeamSdkUploadMessagesBatchFfi(
+      {required BytebeamSdk that, required List<StreamMessageFfi> messages});
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_BytebeamSdk;
@@ -245,29 +248,59 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Stream<String> crateApiLoggerSetupLogs() {
-    final sink = RustStreamSink<String>();
-    unawaited(handler.executeNormal(NormalTask(
+  Future<void> crateApiBytebeamSdkUploadMessageFfi(
+      {required BytebeamSdk that, required StreamMessageFfi message}) {
+    return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_StreamSink_String_Sse(sink, serializer);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+            that, serializer);
+        sse_encode_box_autoadd_stream_message_ffi(message, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 6, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
-        decodeErrorData: sse_decode_AnyhowException,
+        decodeErrorData: sse_decode_String,
       ),
-      constMeta: kCrateApiLoggerSetupLogsConstMeta,
-      argValues: [sink],
+      constMeta: kCrateApiBytebeamSdkUploadMessageFfiConstMeta,
+      argValues: [that, message],
       apiImpl: this,
-    )));
-    return sink.stream;
+    ));
   }
 
-  TaskConstMeta get kCrateApiLoggerSetupLogsConstMeta => const TaskConstMeta(
-        debugName: "setup_logs",
-        argNames: ["sink"],
+  TaskConstMeta get kCrateApiBytebeamSdkUploadMessageFfiConstMeta =>
+      const TaskConstMeta(
+        debugName: "BytebeamSdk_upload_message_ffi",
+        argNames: ["that", "message"],
+      );
+
+  @override
+  Future<void> crateApiBytebeamSdkUploadMessagesBatchFfi(
+      {required BytebeamSdk that, required List<StreamMessageFfi> messages}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
+            that, serializer);
+        sse_encode_list_stream_message_ffi(messages, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 7, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateApiBytebeamSdkUploadMessagesBatchFfiConstMeta,
+      argValues: [that, messages],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiBytebeamSdkUploadMessagesBatchFfiConstMeta =>
+      const TaskConstMeta(
+        debugName: "BytebeamSdk_upload_messages_batch_ffi",
+        argNames: ["that", "messages"],
       );
 
   RustArcIncrementStrongCountFnType
@@ -277,12 +310,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   RustArcDecrementStrongCountFnType
       get rust_arc_decrement_strong_count_BytebeamSdk => wire
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk;
-
-  @protected
-  AnyhowException dco_decode_AnyhowException(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return AnyhowException(raw as String);
-  }
 
   @protected
   BytebeamSdk
@@ -309,17 +336,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Map<String, FieldValue> dco_decode_Map_String_field_value(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return Map.fromEntries(dco_decode_list_record_string_field_value(raw)
+        .map((e) => MapEntry(e.$1, e.$2)));
+  }
+
+  @protected
   BytebeamSdk
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return BytebeamSdkImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  RustStreamSink<String> dco_decode_StreamSink_String_Sse(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    throw UnimplementedError();
   }
 
   @protected
@@ -344,9 +372,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  bool dco_decode_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as bool;
+  }
+
+  @protected
   AvailableUpdate dco_decode_box_autoadd_available_update(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_available_update(raw);
+  }
+
+  @protected
+  StreamMessageFfi dco_decode_box_autoadd_stream_message_ffi(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_stream_message_ffi(raw);
   }
 
   @protected
@@ -377,9 +417,73 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  double dco_decode_f_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as double;
+  }
+
+  @protected
+  FieldValue dco_decode_field_value(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return FieldValue_Null();
+      case 1:
+        return FieldValue_String(
+          dco_decode_String(raw[1]),
+        );
+      case 2:
+        return FieldValue_Int(
+          dco_decode_i_64(raw[1]),
+        );
+      case 3:
+        return FieldValue_Bool(
+          dco_decode_bool(raw[1]),
+        );
+      case 4:
+        return FieldValue_Float(
+          dco_decode_f_64(raw[1]),
+        );
+      case 5:
+        return FieldValue_Array(
+          dco_decode_list_field_value(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  PlatformInt64 dco_decode_i_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeI64(raw);
+  }
+
+  @protected
+  List<FieldValue> dco_decode_list_field_value(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_field_value).toList();
+  }
+
+  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Uint8List;
+  }
+
+  @protected
+  List<(String, FieldValue)> dco_decode_list_record_string_field_value(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>)
+        .map(dco_decode_record_string_field_value)
+        .toList();
+  }
+
+  @protected
+  List<StreamMessageFfi> dco_decode_list_stream_message_ffi(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_stream_message_ffi).toList();
   }
 
   @protected
@@ -389,9 +493,42 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  (String, FieldValue) dco_decode_record_string_field_value(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2) {
+      throw Exception('Expected 2 elements, got ${arr.length}');
+    }
+    return (
+      dco_decode_String(arr[0]),
+      dco_decode_field_value(arr[1]),
+    );
+  }
+
+  @protected
+  StreamMessageFfi dco_decode_stream_message_ffi(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return StreamMessageFfi(
+      stream: dco_decode_String(arr[0]),
+      sequence: dco_decode_u_32(arr[1]),
+      timestamp: dco_decode_u_64(arr[2]),
+      fields: dco_decode_Map_String_field_value(arr[3]),
+    );
+  }
+
+  @protected
   int dco_decode_u_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
+  }
+
+  @protected
+  BigInt dco_decode_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeU64(raw);
   }
 
   @protected
@@ -410,13 +547,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   BigInt dco_decode_usize(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dcoDecodeU64(raw);
-  }
-
-  @protected
-  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var inner = sse_decode_String(deserializer);
-    return AnyhowException(inner);
   }
 
   @protected
@@ -447,19 +577,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Map<String, FieldValue> sse_decode_Map_String_field_value(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_list_record_string_field_value(deserializer);
+    return Map.fromEntries(inner.map((e) => MapEntry(e.$1, e.$2)));
+  }
+
+  @protected
   BytebeamSdk
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return BytebeamSdkImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
-  }
-
-  @protected
-  RustStreamSink<String> sse_decode_StreamSink_String_Sse(
-      SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    throw UnimplementedError('Unreachable ()');
   }
 
   @protected
@@ -486,10 +617,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  bool sse_decode_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint8() != 0;
+  }
+
+  @protected
   AvailableUpdate sse_decode_box_autoadd_available_update(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_available_update(deserializer));
+  }
+
+  @protected
+  StreamMessageFfi sse_decode_box_autoadd_stream_message_ffi(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_stream_message_ffi(deserializer));
   }
 
   @protected
@@ -521,10 +665,88 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  double sse_decode_f_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getFloat64();
+  }
+
+  @protected
+  FieldValue sse_decode_field_value(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        return FieldValue_Null();
+      case 1:
+        var var_field0 = sse_decode_String(deserializer);
+        return FieldValue_String(var_field0);
+      case 2:
+        var var_field0 = sse_decode_i_64(deserializer);
+        return FieldValue_Int(var_field0);
+      case 3:
+        var var_field0 = sse_decode_bool(deserializer);
+        return FieldValue_Bool(var_field0);
+      case 4:
+        var var_field0 = sse_decode_f_64(deserializer);
+        return FieldValue_Float(var_field0);
+      case 5:
+        var var_field0 = sse_decode_list_field_value(deserializer);
+        return FieldValue_Array(var_field0);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  PlatformInt64 sse_decode_i_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getPlatformInt64();
+  }
+
+  @protected
+  List<FieldValue> sse_decode_list_field_value(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <FieldValue>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_field_value(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
     return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  List<(String, FieldValue)> sse_decode_list_record_string_field_value(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <(String, FieldValue)>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_record_string_field_value(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<StreamMessageFfi> sse_decode_list_stream_message_ffi(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <StreamMessageFfi>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_stream_message_ffi(deserializer));
+    }
+    return ans_;
   }
 
   @protected
@@ -540,9 +762,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  (String, FieldValue) sse_decode_record_string_field_value(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_String(deserializer);
+    var var_field1 = sse_decode_field_value(deserializer);
+    return (var_field0, var_field1);
+  }
+
+  @protected
+  StreamMessageFfi sse_decode_stream_message_ffi(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_stream = sse_decode_String(deserializer);
+    var var_sequence = sse_decode_u_32(deserializer);
+    var var_timestamp = sse_decode_u_64(deserializer);
+    var var_fields = sse_decode_Map_String_field_value(deserializer);
+    return StreamMessageFfi(
+        stream: var_stream,
+        sequence: var_sequence,
+        timestamp: var_timestamp,
+        fields: var_fields);
+  }
+
+  @protected
   int sse_decode_u_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint32();
+  }
+
+  @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getBigUint64();
   }
 
   @protected
@@ -566,19 +817,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int sse_decode_i_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getInt32();
-  }
-
-  @protected
-  bool sse_decode_bool(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getUint8() != 0;
-  }
-
-  @protected
-  void sse_encode_AnyhowException(
-      AnyhowException self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_String(self.message, serializer);
   }
 
   @protected
@@ -611,25 +849,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_Map_String_field_value(
+      Map<String, FieldValue> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_record_string_field_value(
+        self.entries.map((e) => (e.key, e.value)).toList(), serializer);
+  }
+
+  @protected
   void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
           BytebeamSdk self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
         (self as BytebeamSdkImpl).frbInternalSseEncode(move: null), serializer);
-  }
-
-  @protected
-  void sse_encode_StreamSink_String_Sse(
-      RustStreamSink<String> self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_String(
-        self.setupAndSerialize(
-            codec: SseCodec(
-          decodeSuccessData: sse_decode_String,
-          decodeErrorData: sse_decode_AnyhowException,
-        )),
-        serializer);
   }
 
   @protected
@@ -650,10 +883,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_bool(bool self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint8(self ? 1 : 0);
+  }
+
+  @protected
   void sse_encode_box_autoadd_available_update(
       AvailableUpdate self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_available_update(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_stream_message_ffi(
+      StreamMessageFfi self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_stream_message_ffi(self, serializer);
   }
 
   @protected
@@ -676,11 +922,77 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_f_64(double self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putFloat64(self);
+  }
+
+  @protected
+  void sse_encode_field_value(FieldValue self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case FieldValue_Null():
+        sse_encode_i_32(0, serializer);
+      case FieldValue_String(field0: final field0):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(field0, serializer);
+      case FieldValue_Int(field0: final field0):
+        sse_encode_i_32(2, serializer);
+        sse_encode_i_64(field0, serializer);
+      case FieldValue_Bool(field0: final field0):
+        sse_encode_i_32(3, serializer);
+        sse_encode_bool(field0, serializer);
+      case FieldValue_Float(field0: final field0):
+        sse_encode_i_32(4, serializer);
+        sse_encode_f_64(field0, serializer);
+      case FieldValue_Array(field0: final field0):
+        sse_encode_i_32(5, serializer);
+        sse_encode_list_field_value(field0, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putPlatformInt64(self);
+  }
+
+  @protected
+  void sse_encode_list_field_value(
+      List<FieldValue> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_field_value(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     serializer.buffer.putUint8List(self);
+  }
+
+  @protected
+  void sse_encode_list_record_string_field_value(
+      List<(String, FieldValue)> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_record_string_field_value(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_stream_message_ffi(
+      List<StreamMessageFfi> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_stream_message_ffi(item, serializer);
+    }
   }
 
   @protected
@@ -695,9 +1007,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_record_string_field_value(
+      (String, FieldValue) self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.$1, serializer);
+    sse_encode_field_value(self.$2, serializer);
+  }
+
+  @protected
+  void sse_encode_stream_message_ffi(
+      StreamMessageFfi self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.stream, serializer);
+    sse_encode_u_32(self.sequence, serializer);
+    sse_encode_u_64(self.timestamp, serializer);
+    sse_encode_Map_String_field_value(self.fields, serializer);
+  }
+
+  @protected
   void sse_encode_u_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint32(self);
+  }
+
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putBigUint64(self);
   }
 
   @protected
@@ -721,12 +1057,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_i_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putInt32(self);
-  }
-
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putUint8(self ? 1 : 0);
   }
 }
 
@@ -766,4 +1096,13 @@ class BytebeamSdkImpl extends RustOpaque implements BytebeamSdk {
       RustLib.instance.api.crateApiBytebeamSdkFetchAvailableUpdate(
         that: this,
       );
+
+  Future<void> uploadMessageFfi({required StreamMessageFfi message}) =>
+      RustLib.instance.api
+          .crateApiBytebeamSdkUploadMessageFfi(that: this, message: message);
+
+  Future<void> uploadMessagesBatchFfi(
+          {required List<StreamMessageFfi> messages}) =>
+      RustLib.instance.api.crateApiBytebeamSdkUploadMessagesBatchFfi(
+          that: this, messages: messages);
 }

@@ -7,7 +7,6 @@
 // ignore_for_file: argument_type_not_assignable
 
 import 'api.dart';
-import 'api/logger.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -26,9 +25,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk;
 
   @protected
-  AnyhowException dco_decode_AnyhowException(dynamic raw);
-
-  @protected
   BytebeamSdk
       dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
           dynamic raw);
@@ -44,12 +40,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
+  Map<String, FieldValue> dco_decode_Map_String_field_value(dynamic raw);
+
+  @protected
   BytebeamSdk
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
           dynamic raw);
-
-  @protected
-  RustStreamSink<String> dco_decode_StreamSink_String_Sse(dynamic raw);
 
   @protected
   String dco_decode_String(dynamic raw);
@@ -58,7 +54,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AvailableUpdate dco_decode_available_update(dynamic raw);
 
   @protected
+  bool dco_decode_bool(dynamic raw);
+
+  @protected
   AvailableUpdate dco_decode_box_autoadd_available_update(dynamic raw);
+
+  @protected
+  StreamMessageFfi dco_decode_box_autoadd_stream_message_ffi(dynamic raw);
 
   @protected
   BytebeamCertificates dco_decode_bytebeam_certificates(dynamic raw);
@@ -67,13 +69,41 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   BytebeamCredentials dco_decode_bytebeam_credentials(dynamic raw);
 
   @protected
+  double dco_decode_f_64(dynamic raw);
+
+  @protected
+  FieldValue dco_decode_field_value(dynamic raw);
+
+  @protected
+  PlatformInt64 dco_decode_i_64(dynamic raw);
+
+  @protected
+  List<FieldValue> dco_decode_list_field_value(dynamic raw);
+
+  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
+
+  @protected
+  List<(String, FieldValue)> dco_decode_list_record_string_field_value(
+      dynamic raw);
+
+  @protected
+  List<StreamMessageFfi> dco_decode_list_stream_message_ffi(dynamic raw);
 
   @protected
   AvailableUpdate? dco_decode_opt_box_autoadd_available_update(dynamic raw);
 
   @protected
+  (String, FieldValue) dco_decode_record_string_field_value(dynamic raw);
+
+  @protected
+  StreamMessageFfi dco_decode_stream_message_ffi(dynamic raw);
+
+  @protected
   int dco_decode_u_32(dynamic raw);
+
+  @protected
+  BigInt dco_decode_u_64(dynamic raw);
 
   @protected
   int dco_decode_u_8(dynamic raw);
@@ -83,9 +113,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   BigInt dco_decode_usize(dynamic raw);
-
-  @protected
-  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
 
   @protected
   BytebeamSdk
@@ -103,13 +130,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  Map<String, FieldValue> sse_decode_Map_String_field_value(
+      SseDeserializer deserializer);
+
+  @protected
   BytebeamSdk
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
           SseDeserializer deserializer);
-
-  @protected
-  RustStreamSink<String> sse_decode_StreamSink_String_Sse(
-      SseDeserializer deserializer);
 
   @protected
   String sse_decode_String(SseDeserializer deserializer);
@@ -118,7 +145,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AvailableUpdate sse_decode_available_update(SseDeserializer deserializer);
 
   @protected
+  bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
   AvailableUpdate sse_decode_box_autoadd_available_update(
+      SseDeserializer deserializer);
+
+  @protected
+  StreamMessageFfi sse_decode_box_autoadd_stream_message_ffi(
       SseDeserializer deserializer);
 
   @protected
@@ -130,14 +164,44 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  double sse_decode_f_64(SseDeserializer deserializer);
+
+  @protected
+  FieldValue sse_decode_field_value(SseDeserializer deserializer);
+
+  @protected
+  PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
+
+  @protected
+  List<FieldValue> sse_decode_list_field_value(SseDeserializer deserializer);
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
+
+  @protected
+  List<(String, FieldValue)> sse_decode_list_record_string_field_value(
+      SseDeserializer deserializer);
+
+  @protected
+  List<StreamMessageFfi> sse_decode_list_stream_message_ffi(
+      SseDeserializer deserializer);
 
   @protected
   AvailableUpdate? sse_decode_opt_box_autoadd_available_update(
       SseDeserializer deserializer);
 
   @protected
+  (String, FieldValue) sse_decode_record_string_field_value(
+      SseDeserializer deserializer);
+
+  @protected
+  StreamMessageFfi sse_decode_stream_message_ffi(SseDeserializer deserializer);
+
+  @protected
   int sse_decode_u_32(SseDeserializer deserializer);
+
+  @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_8(SseDeserializer deserializer);
@@ -150,13 +214,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   int sse_decode_i_32(SseDeserializer deserializer);
-
-  @protected
-  bool sse_decode_bool(SseDeserializer deserializer);
-
-  @protected
-  void sse_encode_AnyhowException(
-      AnyhowException self, SseSerializer serializer);
 
   @protected
   void
@@ -174,13 +231,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           BytebeamSdk self, SseSerializer serializer);
 
   @protected
+  void sse_encode_Map_String_field_value(
+      Map<String, FieldValue> self, SseSerializer serializer);
+
+  @protected
   void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBytebeamSdk(
           BytebeamSdk self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_StreamSink_String_Sse(
-      RustStreamSink<String> self, SseSerializer serializer);
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer);
@@ -190,8 +247,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       AvailableUpdate self, SseSerializer serializer);
 
   @protected
+  void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_available_update(
       AvailableUpdate self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_stream_message_ffi(
+      StreamMessageFfi self, SseSerializer serializer);
 
   @protected
   void sse_encode_bytebeam_certificates(
@@ -202,15 +266,47 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       BytebeamCredentials self, SseSerializer serializer);
 
   @protected
+  void sse_encode_f_64(double self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_field_value(FieldValue self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_field_value(
+      List<FieldValue> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_record_string_field_value(
+      List<(String, FieldValue)> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_stream_message_ffi(
+      List<StreamMessageFfi> self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_available_update(
       AvailableUpdate? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_record_string_field_value(
+      (String, FieldValue) self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_stream_message_ffi(
+      StreamMessageFfi self, SseSerializer serializer);
+
+  @protected
   void sse_encode_u_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_8(int self, SseSerializer serializer);
@@ -223,9 +319,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer);
 }
 
 // Section: wire_class

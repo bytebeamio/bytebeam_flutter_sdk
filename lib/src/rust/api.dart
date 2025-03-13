@@ -5,10 +5,12 @@
 
 import 'frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
+part 'api.freezed.dart';
 
 // These functions are ignored because they are not marked as `pub`: `create_agent`, `parse_impl`
-// These types are ignored because they are not used by any `pub` functions: `AvailableUpdateResponse`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `fmt`, `fmt`
+// These types are ignored because they are not used by any `pub` functions: `AvailableUpdateResponse`, `UploadMessageResponse`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `fmt`, `fmt`, `fmt`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BytebeamSdk>>
 abstract class BytebeamSdk implements RustOpaqueInterface {
@@ -22,6 +24,11 @@ abstract class BytebeamSdk implements RustOpaqueInterface {
 
   static Future<BytebeamSdk> parse({required String creds}) =>
       RustLib.instance.api.crateApiBytebeamSdkParse(creds: creds);
+
+  Future<void> uploadMessageFfi({required StreamMessageFfi message});
+
+  Future<void> uploadMessagesBatchFfi(
+      {required List<StreamMessageFfi> messages});
 }
 
 class AvailableUpdate {
@@ -115,4 +122,57 @@ class BytebeamCredentials {
           deviceId == other.deviceId &&
           apiUrl == other.apiUrl &&
           authentication == other.authentication;
+}
+
+@freezed
+sealed class FieldValue with _$FieldValue {
+  const FieldValue._();
+
+  const factory FieldValue.null_() = FieldValue_Null;
+  const factory FieldValue.string(
+    String field0,
+  ) = FieldValue_String;
+  const factory FieldValue.int(
+    PlatformInt64 field0,
+  ) = FieldValue_Int;
+  const factory FieldValue.bool(
+    bool field0,
+  ) = FieldValue_Bool;
+  const factory FieldValue.float(
+    double field0,
+  ) = FieldValue_Float;
+  const factory FieldValue.array(
+    List<FieldValue> field0,
+  ) = FieldValue_Array;
+}
+
+class StreamMessageFfi {
+  final String stream;
+  final int sequence;
+  final BigInt timestamp;
+  final Map<String, FieldValue> fields;
+
+  const StreamMessageFfi({
+    required this.stream,
+    required this.sequence,
+    required this.timestamp,
+    required this.fields,
+  });
+
+  @override
+  int get hashCode =>
+      stream.hashCode ^
+      sequence.hashCode ^
+      timestamp.hashCode ^
+      fields.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is StreamMessageFfi &&
+          runtimeType == other.runtimeType &&
+          stream == other.stream &&
+          sequence == other.sequence &&
+          timestamp == other.timestamp &&
+          fields == other.fields;
 }
