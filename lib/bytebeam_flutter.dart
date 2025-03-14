@@ -1,8 +1,7 @@
 library;
 
 import 'package:bytebeam_flutter/src/rust/api.dart';
-export 'package:bytebeam_flutter/src/rust/api.dart' show BytebeamSdk;
-export 'src/rust/api/types.dart';
+export 'package:bytebeam_flutter/src/rust/api.dart';
 import 'src/rust/frb_generated.dart' show RustLib;
 
 Future<void> initializeNativeCode() async {
