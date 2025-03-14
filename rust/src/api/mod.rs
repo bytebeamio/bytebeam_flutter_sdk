@@ -50,7 +50,7 @@ impl BytebeamSdk {
         let body = self
             .http_client
             .get(format!(
-                "{}/fetch_available_update",
+                "{}/v1/available_action/update_firmware",
                 self.credentials.api_url
             ))
             .call()
@@ -64,14 +64,14 @@ impl BytebeamSdk {
 
         match parsed_body {
             AvailableUpdateResponse::Error { message } => Err(message),
-            AvailableUpdateResponse::Ok { update } => Ok(update),
+            AvailableUpdateResponse::Ok { action } => Ok(action),
         }
     }
 
-    pub async fn download_update(&self, update: AvailableUpdate) -> Result<Vec<u8>, String> {
+    pub async fn download_firmware(&self, url: &str) -> Result<Vec<u8>, String> {
         let resp = self
             .http_client
-            .get(&update.url)
+            .get(url)
             .call()
             .map_err(|e| format!("connection error: {e:?}"))?;
         if !resp.status().is_success() {
@@ -87,33 +87,17 @@ impl BytebeamSdk {
         Ok(body)
     }
 
-    pub async fn upload_message_ffi(&self, message: StreamMessageFfi) -> Result<(), String> {
-        let resp = self
-            .http_client
-            .post(&format!("{}/upload_message", self.credentials.api_url))
-            .send_json(StreamMessageHttp::from_application_payload(message))
-            .map_err(|e| format!("http error: {e:?}"))?
-            .into_body()
-            .read_to_string()
-            .map_err(|e| format!("http request failed: {e:?}"))?;
-
-        let resp = serde_json::from_str::<UploadMessageResponse>(&resp).map_err(|_| resp)?;
-
-        match resp {
-            UploadMessageResponse::Error { message } => Err(message),
-            UploadMessageResponse::Ok => Ok(()),
-        }
-    }
-
     pub async fn upload_messages_batch_ffi(
         &self,
+        stream: String,
         messages: Vec<StreamMessageFfi>,
     ) -> Result<(), String> {
         let resp = self
             .http_client
             .post(&format!(
-                "{}/upload_messages_batch",
-                self.credentials.api_url
+                "{}/v1/streams/{}/submit",
+                self.credentials.api_url,
+                stream
             ))
             .send_json(
                 messages
@@ -157,15 +141,21 @@ fn create_agent(creds: &BytebeamCertificates) -> anyhow::Result<Agent> {
 #[serde(tag = "status", rename_all = "lowercase")]
 pub enum AvailableUpdateResponse {
     Error { message: String },
-    Ok { update: Option<AvailableUpdate> },
+    Ok { action: Option<AvailableUpdate> },
 }
 
 #[derive(Deserialize)]
 pub struct AvailableUpdate {
     pub action_id: String,
+    pub params: UpdateParams,
+}
+
+#[derive(Deserialize)]
+pub struct UpdateParams {
     pub url: String,
     pub version: String,
-    pub checksum: String,
+    pub checksum: Option<String>,
+    #[serde(rename = "content-length")]
     pub size: u32,
 }
 
@@ -177,7 +167,6 @@ pub enum UploadMessageResponse {
 }
 
 pub struct StreamMessageFfi {
-    pub stream: String,
     pub sequence: u32,
     pub timestamp: u64,
     pub fields: HashMap<String, FieldValue>,

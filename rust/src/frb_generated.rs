@@ -38,7 +38,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.7.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 861948925;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1175129619;
 
 // Section: executor
 
@@ -143,7 +143,7 @@ fn wire__crate__api__BytebeamSdk_auto_accessor_set_credentials_impl(
         },
     )
 }
-fn wire__crate__api__BytebeamSdk_download_update_impl(
+fn wire__crate__api__BytebeamSdk_download_firmware_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -151,7 +151,7 @@ fn wire__crate__api__BytebeamSdk_download_update_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "BytebeamSdk_download_update",
+            debug_name: "BytebeamSdk_download_firmware",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -168,7 +168,7 @@ fn wire__crate__api__BytebeamSdk_download_update_impl(
             let api_that = <RustOpaqueMoi<
                 flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BytebeamSdk>,
             >>::sse_decode(&mut deserializer);
-            let api_update = <crate::api::AvailableUpdate>::sse_decode(&mut deserializer);
+            let api_url = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, String>(
@@ -191,7 +191,7 @@ fn wire__crate__api__BytebeamSdk_download_update_impl(
                         }
                         let api_that_guard = api_that_guard.unwrap();
                         let output_ok =
-                            crate::api::BytebeamSdk::download_update(&*api_that_guard, api_update)
+                            crate::api::BytebeamSdk::download_firmware(&*api_that_guard, &api_url)
                                 .await?;
                         Ok(output_ok)
                     })()
@@ -291,66 +291,6 @@ fn wire__crate__api__BytebeamSdk_parse_impl(
         },
     )
 }
-fn wire__crate__api__BytebeamSdk_upload_message_ffi_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
-    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
-    rust_vec_len_: i32,
-    data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
-        flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "BytebeamSdk_upload_message_ffi",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
-        },
-        move || {
-            let message = unsafe {
-                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
-                    ptr_,
-                    rust_vec_len_,
-                    data_len_,
-                )
-            };
-            let mut deserializer =
-                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_that = <RustOpaqueMoi<
-                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BytebeamSdk>,
-            >>::sse_decode(&mut deserializer);
-            let api_message = <crate::api::StreamMessageFfi>::sse_decode(&mut deserializer);
-            deserializer.end();
-            move |context| async move {
-                transform_result_sse::<_, String>(
-                    (move || async move {
-                        let mut api_that_guard = None;
-                        let decode_indices_ =
-                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
-                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
-                                    &api_that, 0, false,
-                                )],
-                            );
-                        for i in decode_indices_ {
-                            match i {
-                                0 => {
-                                    api_that_guard =
-                                        Some(api_that.lockable_decode_async_ref().await)
-                                }
-                                _ => unreachable!(),
-                            }
-                        }
-                        let api_that_guard = api_that_guard.unwrap();
-                        let output_ok = crate::api::BytebeamSdk::upload_message_ffi(
-                            &*api_that_guard,
-                            api_message,
-                        )
-                        .await?;
-                        Ok(output_ok)
-                    })()
-                    .await,
-                )
-            }
-        },
-    )
-}
 fn wire__crate__api__BytebeamSdk_upload_messages_batch_ffi_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -376,6 +316,7 @@ fn wire__crate__api__BytebeamSdk_upload_messages_batch_ffi_impl(
             let api_that = <RustOpaqueMoi<
                 flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BytebeamSdk>,
             >>::sse_decode(&mut deserializer);
+            let api_stream = <String>::sse_decode(&mut deserializer);
             let api_messages = <Vec<crate::api::StreamMessageFfi>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
@@ -400,6 +341,7 @@ fn wire__crate__api__BytebeamSdk_upload_messages_batch_ffi_impl(
                         let api_that_guard = api_that_guard.unwrap();
                         let output_ok = crate::api::BytebeamSdk::upload_messages_batch_ffi(
                             &*api_that_guard,
+                            api_stream,
                             api_messages,
                         )
                         .await?;
@@ -460,16 +402,10 @@ impl SseDecode for crate::api::AvailableUpdate {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_actionId = <String>::sse_decode(deserializer);
-        let mut var_url = <String>::sse_decode(deserializer);
-        let mut var_version = <String>::sse_decode(deserializer);
-        let mut var_checksum = <String>::sse_decode(deserializer);
-        let mut var_size = <u32>::sse_decode(deserializer);
+        let mut var_params = <crate::api::UpdateParams>::sse_decode(deserializer);
         return crate::api::AvailableUpdate {
             action_id: var_actionId,
-            url: var_url,
-            version: var_version,
-            checksum: var_checksum,
-            size: var_size,
+            params: var_params,
         };
     }
 }
@@ -608,6 +544,17 @@ impl SseDecode for Vec<crate::api::StreamMessageFfi> {
     }
 }
 
+impl SseDecode for Option<String> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<String>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<crate::api::AvailableUpdate> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -631,13 +578,11 @@ impl SseDecode for (String, crate::api::FieldValue) {
 impl SseDecode for crate::api::StreamMessageFfi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_stream = <String>::sse_decode(deserializer);
         let mut var_sequence = <u32>::sse_decode(deserializer);
         let mut var_timestamp = <u64>::sse_decode(deserializer);
         let mut var_fields =
             <std::collections::HashMap<String, crate::api::FieldValue>>::sse_decode(deserializer);
         return crate::api::StreamMessageFfi {
-            stream: var_stream,
             sequence: var_sequence,
             timestamp: var_timestamp,
             fields: var_fields,
@@ -671,6 +616,22 @@ impl SseDecode for () {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {}
 }
 
+impl SseDecode for crate::api::UpdateParams {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_url = <String>::sse_decode(deserializer);
+        let mut var_version = <String>::sse_decode(deserializer);
+        let mut var_checksum = <Option<String>>::sse_decode(deserializer);
+        let mut var_size = <u32>::sse_decode(deserializer);
+        return crate::api::UpdateParams {
+            url: var_url,
+            version: var_version,
+            checksum: var_checksum,
+            size: var_size,
+        };
+    }
+}
+
 impl SseDecode for usize {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -694,7 +655,9 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        3 => wire__crate__api__BytebeamSdk_download_update_impl(port, ptr, rust_vec_len, data_len),
+        3 => {
+            wire__crate__api__BytebeamSdk_download_firmware_impl(port, ptr, rust_vec_len, data_len)
+        }
         4 => wire__crate__api__BytebeamSdk_fetch_available_update_impl(
             port,
             ptr,
@@ -702,10 +665,7 @@ fn pde_ffi_dispatcher_primary_impl(
             data_len,
         ),
         5 => wire__crate__api__BytebeamSdk_parse_impl(port, ptr, rust_vec_len, data_len),
-        6 => {
-            wire__crate__api__BytebeamSdk_upload_message_ffi_impl(port, ptr, rust_vec_len, data_len)
-        }
-        7 => wire__crate__api__BytebeamSdk_upload_messages_batch_ffi_impl(
+        6 => wire__crate__api__BytebeamSdk_upload_messages_batch_ffi_impl(
             port,
             ptr,
             rust_vec_len,
@@ -759,10 +719,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::AvailableUpdate {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
             self.action_id.into_into_dart().into_dart(),
-            self.url.into_into_dart().into_dart(),
-            self.version.into_into_dart().into_dart(),
-            self.checksum.into_into_dart().into_dart(),
-            self.size.into_into_dart().into_dart(),
+            self.params.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -856,7 +813,6 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::FieldValue> for crate::api::F
 impl flutter_rust_bridge::IntoDart for crate::api::StreamMessageFfi {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
-            self.stream.into_into_dart().into_dart(),
             self.sequence.into_into_dart().into_dart(),
             self.timestamp.into_into_dart().into_dart(),
             self.fields.into_into_dart().into_dart(),
@@ -869,6 +825,24 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::StreamMessageFfi>
     for crate::api::StreamMessageFfi
 {
     fn into_into_dart(self) -> crate::api::StreamMessageFfi {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::UpdateParams {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.url.into_into_dart().into_dart(),
+            self.version.into_into_dart().into_dart(),
+            self.checksum.into_into_dart().into_dart(),
+            self.size.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive for crate::api::UpdateParams {}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::UpdateParams> for crate::api::UpdateParams {
+    fn into_into_dart(self) -> crate::api::UpdateParams {
         self
     }
 }
@@ -909,10 +883,7 @@ impl SseEncode for crate::api::AvailableUpdate {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.action_id, serializer);
-        <String>::sse_encode(self.url, serializer);
-        <String>::sse_encode(self.version, serializer);
-        <String>::sse_encode(self.checksum, serializer);
-        <u32>::sse_encode(self.size, serializer);
+        <crate::api::UpdateParams>::sse_encode(self.params, serializer);
     }
 }
 
@@ -1030,6 +1001,16 @@ impl SseEncode for Vec<crate::api::StreamMessageFfi> {
     }
 }
 
+impl SseEncode for Option<String> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <String>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<crate::api::AvailableUpdate> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1051,7 +1032,6 @@ impl SseEncode for (String, crate::api::FieldValue) {
 impl SseEncode for crate::api::StreamMessageFfi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <String>::sse_encode(self.stream, serializer);
         <u32>::sse_encode(self.sequence, serializer);
         <u64>::sse_encode(self.timestamp, serializer);
         <std::collections::HashMap<String, crate::api::FieldValue>>::sse_encode(
@@ -1085,6 +1065,16 @@ impl SseEncode for u8 {
 impl SseEncode for () {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {}
+}
+
+impl SseEncode for crate::api::UpdateParams {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.url, serializer);
+        <String>::sse_encode(self.version, serializer);
+        <Option<String>>::sse_encode(self.checksum, serializer);
+        <u32>::sse_encode(self.size, serializer);
+    }
 }
 
 impl SseEncode for usize {

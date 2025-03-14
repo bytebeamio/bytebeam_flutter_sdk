@@ -4,7 +4,6 @@ use crate::api::{FieldValue, StreamMessageFfi};
 
 #[derive(Serialize, Debug)]
 pub struct StreamMessageHttp {
-    stream: String,
     sequence: u32,
     timestamp: u64,
     #[serde(flatten)]
@@ -34,7 +33,6 @@ impl StreamMessageHttp {
         }
 
         StreamMessageHttp {
-            stream: m.stream,
             sequence: m.sequence,
             timestamp: m.timestamp,
             fields: Value::Object(fields),

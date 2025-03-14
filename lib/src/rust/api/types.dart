@@ -10,61 +10,6 @@ part 'types.freezed.dart';
 
 // These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `fmt`, `fmt`, `fmt`
 
-class Action {
-  final String actionId;
-  final String name;
-  final String payload;
-
-  const Action({
-    required this.actionId,
-    required this.name,
-    required this.payload,
-  });
-
-  @override
-  int get hashCode => actionId.hashCode ^ name.hashCode ^ payload.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Action &&
-          runtimeType == other.runtimeType &&
-          actionId == other.actionId &&
-          name == other.name &&
-          payload == other.payload;
-}
-
-class BytebeamPayload {
-  final String stream;
-  final int sequence;
-  final BigInt timestamp;
-  final Map<String, FieldValue> payload;
-
-  const BytebeamPayload({
-    required this.stream,
-    required this.sequence,
-    required this.timestamp,
-    required this.payload,
-  });
-
-  @override
-  int get hashCode =>
-      stream.hashCode ^
-      sequence.hashCode ^
-      timestamp.hashCode ^
-      payload.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is BytebeamPayload &&
-          runtimeType == other.runtimeType &&
-          stream == other.stream &&
-          sequence == other.sequence &&
-          timestamp == other.timestamp &&
-          payload == other.payload;
-}
-
 @freezed
 sealed class FieldValue with _$FieldValue {
   const FieldValue._();

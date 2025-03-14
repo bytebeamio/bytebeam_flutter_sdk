@@ -1,23 +1,30 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
-import 'package:bytebeam_flutter/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:bytebeam_flutter/bytebeam_flutter.dart' as bytebeam;
 import 'package:flutter/services.dart';
 
+late bytebeam.BytebeamSdk sdk;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await bytebeam.initializeNativeCode();
-  bytebeam.doStuff(await rootBundle.loadString('assets/device.json'));
+  sdk = await bytebeam.BytebeamSdk.parse(creds: await rootBundle.loadString('assets/device.json'));
   runApp(const MyApp());
 }
 
 var count = 0;
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  OTAState state = OTAState.Idle;
+  bool update_available = false;
 
   @override
   Widget build(BuildContext context) {
@@ -28,31 +35,9 @@ class MyApp extends StatelessWidget {
           child: Column(
             children: [
               ElevatedButton(
-                onPressed: () async {
-                  // await connectToBytebeamBackend();
-                },
-                child: Text("Start"),
-              ),
-              ElevatedButton(
                 onPressed: () {
-                  // bytebeam.disconnectBytebeamClient();
                 },
-                child: Text("Stop"),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  count++;
-                  String status = count % 2 == 0 ? "on" : "off";
-                  // bytebeam.sendMessage(
-                  //   bytebeam.BytebeamPayload(
-                  //     stream: "test_stream",
-                  //     sequence: count,
-                  //     timestamp: clock(),
-                  //     payload: {"status": bytebeam.FieldValue.string(status)},
-                  //   ),
-                  // );
-                },
-                child: Text("Push data"),
+                child: Text("Check for update"),
               ),
             ],
           ),
@@ -60,4 +45,14 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+}
+
+enum OTAState {
+  Idle,
+  UpdateNotAvailable,
+  CheckingForUpdate,
+  UpdateAvailable,
+  DownloadingUpdate,
+  Downloaded,
+  InstallingUpdate,
 }

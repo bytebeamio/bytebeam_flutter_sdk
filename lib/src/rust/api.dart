@@ -18,41 +18,28 @@ abstract class BytebeamSdk implements RustOpaqueInterface {
 
   set credentials(BytebeamCredentials credentials);
 
-  Future<Uint8List> downloadUpdate({required AvailableUpdate update});
+  Future<Uint8List> downloadFirmware({required String url});
 
   Future<AvailableUpdate?> fetchAvailableUpdate();
 
   static Future<BytebeamSdk> parse({required String creds}) =>
       RustLib.instance.api.crateApiBytebeamSdkParse(creds: creds);
 
-  Future<void> uploadMessageFfi({required StreamMessageFfi message});
-
   Future<void> uploadMessagesBatchFfi(
-      {required List<StreamMessageFfi> messages});
+      {required String stream, required List<StreamMessageFfi> messages});
 }
 
 class AvailableUpdate {
   final String actionId;
-  final String url;
-  final String version;
-  final String checksum;
-  final int size;
+  final UpdateParams params;
 
   const AvailableUpdate({
     required this.actionId,
-    required this.url,
-    required this.version,
-    required this.checksum,
-    required this.size,
+    required this.params,
   });
 
   @override
-  int get hashCode =>
-      actionId.hashCode ^
-      url.hashCode ^
-      version.hashCode ^
-      checksum.hashCode ^
-      size.hashCode;
+  int get hashCode => actionId.hashCode ^ params.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -60,10 +47,7 @@ class AvailableUpdate {
       other is AvailableUpdate &&
           runtimeType == other.runtimeType &&
           actionId == other.actionId &&
-          url == other.url &&
-          version == other.version &&
-          checksum == other.checksum &&
-          size == other.size;
+          params == other.params;
 }
 
 class BytebeamCertificates {
@@ -147,32 +131,53 @@ sealed class FieldValue with _$FieldValue {
 }
 
 class StreamMessageFfi {
-  final String stream;
   final int sequence;
   final BigInt timestamp;
   final Map<String, FieldValue> fields;
 
   const StreamMessageFfi({
-    required this.stream,
     required this.sequence,
     required this.timestamp,
     required this.fields,
   });
 
   @override
-  int get hashCode =>
-      stream.hashCode ^
-      sequence.hashCode ^
-      timestamp.hashCode ^
-      fields.hashCode;
+  int get hashCode => sequence.hashCode ^ timestamp.hashCode ^ fields.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is StreamMessageFfi &&
           runtimeType == other.runtimeType &&
-          stream == other.stream &&
           sequence == other.sequence &&
           timestamp == other.timestamp &&
           fields == other.fields;
+}
+
+class UpdateParams {
+  final String url;
+  final String version;
+  final String? checksum;
+  final int size;
+
+  const UpdateParams({
+    required this.url,
+    required this.version,
+    this.checksum,
+    required this.size,
+  });
+
+  @override
+  int get hashCode =>
+      url.hashCode ^ version.hashCode ^ checksum.hashCode ^ size.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is UpdateParams &&
+          runtimeType == other.runtimeType &&
+          url == other.url &&
+          version == other.version &&
+          checksum == other.checksum &&
+          size == other.size;
 }

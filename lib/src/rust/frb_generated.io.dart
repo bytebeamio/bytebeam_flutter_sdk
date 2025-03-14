@@ -58,9 +58,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AvailableUpdate dco_decode_box_autoadd_available_update(dynamic raw);
 
   @protected
-  StreamMessageFfi dco_decode_box_autoadd_stream_message_ffi(dynamic raw);
-
-  @protected
   BytebeamCertificates dco_decode_bytebeam_certificates(dynamic raw);
 
   @protected
@@ -89,6 +86,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<StreamMessageFfi> dco_decode_list_stream_message_ffi(dynamic raw);
 
   @protected
+  String? dco_decode_opt_String(dynamic raw);
+
+  @protected
   AvailableUpdate? dco_decode_opt_box_autoadd_available_update(dynamic raw);
 
   @protected
@@ -108,6 +108,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void dco_decode_unit(dynamic raw);
+
+  @protected
+  UpdateParams dco_decode_update_params(dynamic raw);
 
   @protected
   BigInt dco_decode_usize(dynamic raw);
@@ -150,10 +153,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  StreamMessageFfi sse_decode_box_autoadd_stream_message_ffi(
-      SseDeserializer deserializer);
-
-  @protected
   BytebeamCertificates sse_decode_bytebeam_certificates(
       SseDeserializer deserializer);
 
@@ -185,6 +184,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  String? sse_decode_opt_String(SseDeserializer deserializer);
+
+  @protected
   AvailableUpdate? sse_decode_opt_box_autoadd_available_update(
       SseDeserializer deserializer);
 
@@ -206,6 +208,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_decode_unit(SseDeserializer deserializer);
+
+  @protected
+  UpdateParams sse_decode_update_params(SseDeserializer deserializer);
 
   @protected
   BigInt sse_decode_usize(SseDeserializer deserializer);
@@ -252,10 +257,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       AvailableUpdate self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_stream_message_ffi(
-      StreamMessageFfi self, SseSerializer serializer);
-
-  @protected
   void sse_encode_bytebeam_certificates(
       BytebeamCertificates self, SseSerializer serializer);
 
@@ -289,6 +290,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<StreamMessageFfi> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_opt_box_autoadd_available_update(
       AvailableUpdate? self, SseSerializer serializer);
 
@@ -311,6 +315,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_unit(void self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_update_params(UpdateParams self, SseSerializer serializer);
 
   @protected
   void sse_encode_usize(BigInt self, SseSerializer serializer);
