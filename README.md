@@ -7,18 +7,20 @@ SDK for communicating with the bytebeam cloud from a flutter app. See example ap
 * `void initializeNativeCode()`
 Must be called when the application boots up.
 
-* `void initializeBytebeamClient`
-Initiate connection to the backend using this configuration. The SDK manages a global connection and the old one is terminated if this function is called again.
-You can pass a callback that will be invoked for incoming actions.
+## `BytebeamSdk` class
 
-* `bool sdkInitialized()`
-Status of the global connection
+This class has the following methods:
 
-* `void disconnectBytebeamClient()`
-Dispose the existing connection to bytebeam backend
+* `static Future<BytebeamSdk> parse({required String creds})`
+Parse and validate a credentials string you receive when provisioning a device on our platform.
 
-* `sendMessage`
-Send a message to the bytebeam cloud using the global connection. If responding to incoming actions.
+* `Future<AvailableUpdate?> fetchAvailableUpdate()`
+Fetch current update. Returns null if no update is available.
 
-* `actionResponse`
-A utility function you can use to create a payload that you can pass to `sendMessage`.
+* `Future<Uint8List> downloadFirmware({required String url})`
+Takes the url of an update returned from `fetchAvailableUpdate` and securely downloads it.
+
+* `Future<void> uploadMessage({required String stream, required Map<String, dynamic> fields})`
+Upload a message to a stream. 
+When responding to actions, you need to send a message to the `action_status` stream with fields 
+(`action_id`, `state`, `progress`, and `errors` (optional))
