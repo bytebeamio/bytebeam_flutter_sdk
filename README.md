@@ -24,3 +24,5 @@ Takes the url of an update returned from `fetchAvailableUpdate` and securely dow
 Upload a message to a stream. 
 When responding to actions, you need to send a message to the `action_status` stream with fields 
 (`action_id`, `state`, `progress`, and `errors` (optional))
+
+All of these methods throw a string in case of error.
