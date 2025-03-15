@@ -9,6 +9,14 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await bytebeam.initializeNativeCode();
   sdk = await bytebeam.BytebeamSdk.parse(creds: await rootBundle.loadString('assets/device.json'));
+  Timer.periodic(Duration(seconds: 60), (timer) async {
+    await sdk.uploadMessage(
+        stream: "device_shadow",
+        fields: {
+          "uplink_version": "2.9.1"
+        }
+    );
+  });
   runApp(const MaterialApp(home: UpdateScreen()));
 }
 
